@@ -3,10 +3,10 @@ Create Table Person(
 	DOB		DATE,
 	Photo		OID,
 	History		OID,
-	Death Date	DATE,
+	DeathDate	DATE,
 
 	PRIMARY KEY(Name, DOB),
-	Check(DOB < Death Date)
+	Check(DOB < DeathDate)
 );
  
 Create Table ActiveRelatives(
@@ -16,8 +16,8 @@ Create Table ActiveRelatives(
 	DOB2		DATE,
 
 	PRIMARY KEY(Name1 ,Name2 ,DOB1,DOB2),
-	FOREIGN KEY (Name1,DOB1) REFERENCES Person(Name1,DOB1),
-	FOREIGN KEY (Name2,DOB2) REFERENCES Person(Name2,DOB2)
+	FOREIGN KEY (Name1,DOB1) REFERENCES Person(Name,DOB),
+	FOREIGN KEY (Name2,DOB2) REFERENCES Person(Name,DOB)
 );
 
 Create Table Party(
@@ -88,7 +88,7 @@ Create Table Election (
 	Year					INT,
 	LokSabha				INT,
 	
-	PRIMARY KEY (Year),
+	PRIMARY KEY (Year)
 
 );
 
@@ -107,11 +107,11 @@ Create Table Stats(
 
 );
 
-Create Table User(
+Create Table Users(
 	EmailId	VARCHAR(200),
 	Name		VARCHAR(45),
 
-	PRIMARY KEY (Name)	
+	PRIMARY KEY (EmailId)	
 
 );
 
@@ -121,7 +121,7 @@ Create Table Follows(
 
 
 	PRIMARY KEY (EmailId,PartyName),	
-	FOREIGN KEY (EmailId) REFERENCES	User(EmailId),
+	FOREIGN KEY (EmailId) REFERENCES	Users(EmailId),
 	FOREIGN KEY (PartyName) REFERENCES Party(Name) 
 );
 
@@ -151,7 +151,7 @@ Create Table Discussion(
 	EmailId		VARCHAR(200),
 
 	PRIMARY KEY (ID),
-	FOREIGN KEY (EmailId) REFERENCES User(EmailId) 	
+	FOREIGN KEY (EmailId) REFERENCES Users(EmailId) 	
 
 
 );
@@ -210,10 +210,11 @@ Create Table ConstituencyStarter(
 Create Table PersonStarter(
 	ID			BIGINT,
 	PersonName	VARCHAR(100),
+	PersonDOB	DATE,
 
 	PRIMARY KEY (ID,PersonName),
 	FOREIGN KEY (ID) REFERENCES Starter(ID),
-	FOREIGN KEY (PersonName) REFERENCES Person(Name)
+	FOREIGN KEY (PersonName,PersonDOB) REFERENCES Person(Name,DOB)
 
 );
 
