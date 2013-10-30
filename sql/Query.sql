@@ -3,7 +3,6 @@
 
 
 /*Queries If A Election is Selected with Year="xyz"*/
-
 SELECT Election.Year,
 Election.LokSabha,
 Candidate.PersonName, 
@@ -187,6 +186,25 @@ AND	StateName="pre-selected_State";
 SELECT NotablePersonName ,NotablePersonDOB FROM NotablePersonConstituency WHERE 
 Name="selected_constituency" AND StateName="pre-selected_State";
 
+/*Find the winner of election in year y in this constituency*/
+SELECT 
+Candidate.Year,
+Candidate.PersonName, 
+Candidate.Votes,
+Candidate.PartyName,
+Candidate.ConstituencyName ,
+Candidate.StateName,
+Candidate.PersonDOB
+Candidate.Results,
+Person.Photo
+FROM Candidate ,Person WHERE 
+Candidate.ConstituencyName="selected_constituency"
+AND	Candidate.StateName="pre-selected_State"
+AND	Candidate.PersonDOB=Person.DOB
+AND	Candidate.PersonName=Person.Name
+AND Candidate.Year = "y"
+AND Candidate.Results = TRUE;
+
 /*Selecting Candidate Participated in any election Held in selected constituency */
 
 SELECT 
@@ -232,3 +250,45 @@ AND Discussion.EmailId=Users.EmailId;
 
 
 /*Queries Related to Stats Page */
+
+/*votes for parties in set x for states in set y for election year in set z*/
+SELECT SUM(Votes), PartyName, StateName, Year 
+FROM Candidate WHERE 
+PartyName in x 
+AND StateName in y 
+AND Year in z
+GROUP BY PartyName, StateName, Year;
+
+/*if all the years or parties or states are selected then remove the corresponding condition*/
+/*e.g. if all states are selected then the query will be - */
+SELECT SUM(Votes), PartyName, StateName, Year 
+FROM Candidate 
+WHERE PartyName in x 
+AND Year in z
+GROUP BY PartyName, StateName, Year;
+
+/*Winners for parties in set x for states in set y for election year in set z*/
+SELECT PersonName, PersonDOB, PartyName, ConstituencyName, StateName, Year
+FROM Candidate WHERE
+PartyName in x 
+AND StateName in y 
+AND Year in z
+AND Results = TRUE;
+
+/*Female candidates for parties in set x for states in set y for election year in set z*/
+SELECT Candidate.PersonName, Candidate.PersonDOB, Candidate.PartyName, Candidate.ConstituencyName, Candidate.StateName, 
+Candidate.Year  
+FROM Candidate, Person WHERE
+Candidate.PartyName in x
+AND Candidate.StateName in y
+AND Candidate.Year in z
+AND Candidate.PersonName = Person.Name
+AND Candidate.PersonDOB = Person.DOB
+AND Person.Sex = 'F';
+
+/*Candidates for parties in set x for states in set y for election year in set z*/
+SELECT PersonName, PersonDOB, PartyName, ConstituencyName, StateName, Year
+FROM Candidate WHERE
+PartyName in x 
+AND StateName in y 
+AND Year in z;
