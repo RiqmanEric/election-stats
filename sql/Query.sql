@@ -1,6 +1,24 @@
 /*Type of queries made by user from main page
 */
 
+/*Queries to add new discussion or comment*/
+/*Insert For Start of New Discussion */
+INSERT INTO Discussion 
+VALUES("TEXT", EmailId);
+
+INSERT INTO Starter
+VALUES("TEXT", Topic);
+
+/*According to topic insert into correct relation for discussion topic from PartyStarter, StateStarter, 
+ConstituencyStarter, ElectionStarter, PersonStarter*/
+INSERT INTO XStarter
+VALUES(ID, key);
+/*where X is one of Party, State, Constituency, Election or Person and key is its primary key*/
+
+/*Add a comment on a discussion with id parentID*/
+INSERT INTO Comment
+VALUES(parentID);
+
 
 /*Queries If A Election is Selected with Year="xyz"*/
 SELECT Election.Year,
@@ -34,8 +52,10 @@ Where Comment.ParentDiscussionID="Starter ID"
 AND Comment.ID=Discussion.ID 
 AND Discussion.EmailId=Users.EmailId;
 
-/*Insert For Start of New Discussion */
 
+
+
+/**/
 /******************************************************************************************/
 /*Queries for  Person Field on Main Page*/
 
