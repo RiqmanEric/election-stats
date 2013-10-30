@@ -4,11 +4,12 @@ Create Table Person(
 	Photo		OID,
 	History		OID,
 	DeathDate	DATE,
+	SEX			CHAR(1),
 
 	PRIMARY KEY(Name, DOB),
 	Check(DOB < DeathDate)
 );
- 
+
 Create Table ActiveRelatives(
 	Name1	VARCHAR(45),
 	Name2	VARCHAR(45),
@@ -65,14 +66,14 @@ Create Table Constituency(
 	Facts					TEXT,
 	FoundationYear			INT,
 	MajorParty				VARCHAR(100),
-	
+
 	PRIMARY KEY (Name, StateName),
 	FOREIGN KEY (StateName) REFERENCES State(Name),
 	FOREIGN KEY (MajorParty) REFERENCES Party(Name)
 
 );
 
-Create Table NotablePersonConstituency(	
+Create Table NotablePersonConstituency(
 	Name					VARCHAR(100),
 	StateName				VARCHAR(100),
 	NotablePersonName			VARCHAR(45),
@@ -87,7 +88,7 @@ Create Table NotablePersonConstituency(
 Create Table Election (
 	Year					INT,
 	LokSabha				INT,
-	
+
 	PRIMARY KEY (Year)
 
 );
@@ -111,7 +112,7 @@ Create Table Users(
 	EmailId	VARCHAR(200),
 	Name		VARCHAR(45),
 
-	PRIMARY KEY (EmailId)	
+	PRIMARY KEY (EmailId)
 
 );
 
@@ -120,16 +121,16 @@ Create Table Follows(
 	PartyName	VARCHAR(100),
 
 
-	PRIMARY KEY (EmailId,PartyName),	
+	PRIMARY KEY (EmailId,PartyName),
 	FOREIGN KEY (EmailId) REFERENCES	Users(EmailId),
-	FOREIGN KEY (PartyName) REFERENCES Party(Name) 
+	FOREIGN KEY (PartyName) REFERENCES Party(Name)
 );
 
 Create Table Candidate(
 	CandidateID			BIGINT,
 	Votes				BIGINT,
 	Year				INT,
-	Results				BOOLEAN,				
+	Results				BOOLEAN,
 	PartyName			VARCHAR(100),
 	ConstituencyName	VARCHAR(100),
 	StateName			VARCHAR(100),
@@ -140,7 +141,7 @@ Create Table Candidate(
 	UNIQUE (Year, PartyName, ConstituencyName, StateName, PersonName, PersonDOB),
 	FOREIGN KEY (Year) REFERENCES Election (Year),
 	FOREIGN KEY (PartyName) REFERENCES Party(Name),
-	FOREIGN KEY (ConstituencyName,StateName) REFERENCES Constituency(Name,StateName),	 
+	FOREIGN KEY (ConstituencyName,StateName) REFERENCES Constituency(Name,StateName),
 	FOREIGN KEY (PersonName,PersonDOB) REFERENCES	Person(Name,DOB)
 
 );
@@ -151,7 +152,7 @@ Create Table Discussion(
 	EmailId		VARCHAR(200),
 
 	PRIMARY KEY (ID),
-	FOREIGN KEY (EmailId) REFERENCES Users(EmailId) 	
+	FOREIGN KEY (EmailId) REFERENCES Users(EmailId)
 
 
 );
@@ -161,7 +162,7 @@ Create Table Starter(
 	TOPIC		TEXT,
 
 	PRIMARY KEY (ID),
-	FOREIGN KEY (ID) REFERENCES Discussion(ID)	
+	FOREIGN KEY (ID) REFERENCES Discussion(ID)
 
 );
 
@@ -174,7 +175,7 @@ Create Table Comment(
 	FOREIGN KEY (ID) REFERENCES Discussion(ID)
 
 
-); 
+);
 
 Create Table PartyStarter(
 	ID			BIGINT,
