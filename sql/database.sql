@@ -24,7 +24,7 @@ Create Table Party(
 	Name					VARCHAR(100),
 	Ideology				TEXT,
 	History					OID,
-	NumberOfFollowers			BIGINT,
+	NumberOfFollowers		BIGINT,
 	Existence				BOOLEAN,
 	ElectionSymbol			OID,
 	NumberOfMembersInParliament	INT,
@@ -94,8 +94,8 @@ Create Table Election (
 
 
 Create Table Stats(
-	ElectionYear				INT,
-	ConstituencyName			VARCHAR(100),
+	ElectionYear			INT,
+	ConstituencyName		VARCHAR(100),
 	StateName				VARCHAR(100),
 	TotalVoters				BIGINT,
 	VotesCasted				BIGINT,
