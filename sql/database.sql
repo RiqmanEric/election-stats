@@ -1,8 +1,8 @@
 Create Table Person(
-	Name		VARCHAR(45),
+	Name		VARCHAR(60),
 	DOB		DATE,
 	Photo		OID,
-	History		OID,
+	History		VARCHAR(2000),
 	DeathDate	DATE,
 	SEX			CHAR(1),
 
@@ -11,8 +11,8 @@ Create Table Person(
 );
 
 Create Table ActiveRelatives(
-	Name1	VARCHAR(45),
-	Name2	VARCHAR(45),
+	Name1	VARCHAR(60),
+	Name2	VARCHAR(60),
 	DOB1		DATE,
 	DOB2		DATE,
 
@@ -29,7 +29,7 @@ Create Table Party(
 	Existence				BOOLEAN,
 	ElectionSymbol			OID,
 	NumberOfMembersInParliament	INT,
-	ChairPersonName			VARCHAR(45),
+	ChairPersonName			VARCHAR(60),
 	ChairPersonDOB			DATE,
 
 	PRIMARY KEY (Name),
@@ -42,7 +42,7 @@ Create Table Party(
 
 Create Table NotablePerson(
 	PartyName				VARCHAR(100),
-	PersonName				VARCHAR(45),
+	PersonName				VARCHAR(60),
 	DOB					DATE,
 
 	PRIMARY KEY (PersonName,DOB),
@@ -76,7 +76,7 @@ Create Table Constituency(
 Create Table NotablePersonConstituency(
 	Name					VARCHAR(100),
 	StateName				VARCHAR(100),
-	NotablePersonName			VARCHAR(45),
+	NotablePersonName			VARCHAR(60),
 	NotablePersonDOB			DATE,
 
 	PRIMARY KEY (Name, StateName, NotablePersonName, NotablePersonDOB),
@@ -110,7 +110,7 @@ Create Table Stats(
 
 Create Table Users(
 	EmailId	VARCHAR(200),
-	Name		VARCHAR(45),
+	Name		VARCHAR(60),
 
 	PRIMARY KEY (EmailId)
 
@@ -127,14 +127,14 @@ Create Table Follows(
 );
 
 Create Table Candidate(
-	CandidateID			BIGINT,
+	CandidateID			SERIAL,
 	Votes				BIGINT,
 	Year				INT,
 	Results				BOOLEAN,
 	PartyName			VARCHAR(100),
 	ConstituencyName	VARCHAR(100),
 	StateName			VARCHAR(100),
-	PersonName			VARCHAR(45),
+	PersonName			VARCHAR(60),
 	PersonDOB			DATE,
 
 	PRIMARY KEY (CandidateID),

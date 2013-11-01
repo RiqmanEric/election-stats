@@ -138,6 +138,7 @@ INSERT INTO constituency VALUES ('ujiarpur', 'bihar', NULL, NULL, NULL);
 INSERT INTO constituency VALUES ('vaishali', 'bihar', NULL, NULL, NULL);
 INSERT INTO constituency VALUES ('valmiki nagar', 'bihar', NULL, NULL, NULL);
 INSERT INTO constituency VALUES ('chandigarh', 'chandigarh', NULL, NULL, NULL);
+INSERT INTO constituency VALUES ('korba', 'chhattisgarh', NULL, NULL, NULL);
 INSERT INTO constituency VALUES ('bastar', 'chhattisgarh', NULL, NULL, NULL);
 INSERT INTO constituency VALUES ('bilaspur', 'chhattisgarh', NULL, NULL, NULL);
 INSERT INTO constituency VALUES ('durg', 'chhattisgarh', NULL, NULL, NULL);

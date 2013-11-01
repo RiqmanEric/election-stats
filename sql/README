@@ -1,0 +1,25 @@
+a. The schema creation:
+	Schema creation commands are written in database.sql file. It is executed to create the schema for our application.
+	We also have a drop.sql file which drops all the tables in the database and clears out the database.
+	
+	Data Upload SQL:
+	To upload data into the database, we have following files:
+	1)	insertPerson.sql
+	2)	insertParty.sql
+	3)	insertState.sql
+	4)	insertConstituency.sql
+	5)	insertElection.sql
+	6)	insertCandidate.sql
+	These files are executed in order as above to avoid dependency problems.
+	For other relations, we will insert the data manually.
+
+b. SQL commands for all the queries in our application are in the file Query.sql. 
+	This includes queries for - 
+	1) Loading the data on the page of a selected election
+	2) Loading the data on the page of a selected person
+	3) Loading the data on the page of a selected state
+	4) Loading the data on the page of a selected party
+	5) Loading the data on the page of a selected constituency
+	6) Special queries to display user requested statistics related to a set of states, elections and parties.
+	7) Queries related to starting new discussions and comments
+
