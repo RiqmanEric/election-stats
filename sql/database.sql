@@ -1,7 +1,7 @@
 Create Table Person(
 	Name		VARCHAR(60),
 	DOB		DATE,
-	Photo		OID,
+	Photo		VARCHAR(20),
 	History		VARCHAR(2000),
 	DeathDate	DATE,
 	SEX			CHAR(1),
