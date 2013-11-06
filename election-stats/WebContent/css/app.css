@@ -1,0 +1,26 @@
+#Info {
+  background-color:#fbfbfa;
+  padding: 22px 0;
+  border-collapse: separate;
+  border-spacing: 2px;
+  border-width: 2px;
+  border-color: #d9d9d9;
+}
+#Candidates{
+  background-color:#f2f2f1;
+  padding: 22px 0;
+  border-collapse: separate;
+  border-spacing: 2px;
+  border-width: 2px;
+  border-color: #d9d9d9;
+}
+#Filters{
+  background-color:#25383C;
+}
+#Discussion{
+  background-color:#d2d2d1;
+}
+.cand_info{
+  margin: 0 auto 0 auto;
+}
+
