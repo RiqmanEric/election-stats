@@ -4,24 +4,34 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Candidate {
-	String name;
-	String DOB;
-	String state;
-	String constituency;
-	boolean result;
-	String party;
+	int candidateID;
 	int votes;
+	int year;
+	String result;
+	String party;
+	String constituency;
+	String state;
+	ChotaPerson person;
 	
-	public Candidate(String name, String dOB, String state,
-			String constituency, boolean result, String party, int votes) {
+	public Candidate(int candidateID, int votes, int year, String result,
+			String party, String constituency, String state, ChotaPerson person) {
 		super();
-		this.name = name;
-		DOB = dOB;
-		this.state = state;
-		this.constituency = constituency;
+		this.candidateID = candidateID;
+		this.votes = votes;
+		this.year = year;
 		this.result = result;
 		this.party = party;
-		this.votes = votes;
+		this.constituency = constituency;
+		this.state = state;
+		this.person = person;
+	}
+
+	public int getCandidateID() {
+		return candidateID;
+	}
+
+	public void setCandidateID(int candidateID) {
+		this.candidateID = candidateID;
 	}
 
 	public int getVotes() {
@@ -32,20 +42,20 @@ public class Candidate {
 		this.votes = votes;
 	}
 
-	public String getState() {
-		return state;
+	public int getYear() {
+		return year;
 	}
 
-	public void setState(String state) {
-		this.state = state;
+	public void setYear(int year) {
+		this.year = year;
 	}
 
-	public String getConstituency() {
-		return constituency;
+	public String getResult() {
+		return result;
 	}
 
-	public void setConstituency(String constituency) {
-		this.constituency = constituency;
+	public void setResult(String result) {
+		this.result = result;
 	}
 
 	public String getParty() {
@@ -56,27 +66,29 @@ public class Candidate {
 		this.party = party;
 	}
 
-	public boolean getResult(){
-		return result;
-	}
-	
-	public void setResult(boolean result) {
-		this.result = result;
+	public String getConstituency() {
+		return constituency;
 	}
 
-	public String getName() {
-		return name;
+	public void setConstituency(String constituency) {
+		this.constituency = constituency;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public String getState() {
+		return state;
 	}
 
-	public String getDOB() {
-		return DOB;
+	public void setState(String state) {
+		this.state = state;
 	}
 
-	public void setDOB(String dOB) {
-		DOB = dOB;
+	public ChotaPerson getPerson() {
+		return person;
 	}
+
+	public void setPerson(ChotaPerson person) {
+		this.person = person;
+	}	
 }
+	
+	
