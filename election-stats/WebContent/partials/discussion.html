@@ -1,0 +1,7 @@
+	<a href="#">{{discussion.user}}: </strong> </a> 
+	<br> {{discussion.content}}
+	<ul class="inline-list">
+		<li><a href="">Reply</a></li>
+		<li><a href="">Comments</a></li>
+	</ul>
+	<div class="small-11 large-11 large-offset-1 small-offset-1 columns" ng-repeat="discussion in discussion.comments" ng-include="'partials/discussion.html'"></div>

@@ -23,4 +23,8 @@
 .cand_info{
   margin: 0 auto 0 auto;
 }
+#candidate_container{
+  max-height: 500px;
+  overflow-y: scroll;
+}
 
