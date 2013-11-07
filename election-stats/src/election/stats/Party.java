@@ -8,13 +8,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Party {
 	String name;
 	String ideology;
-	Person chairPerson;
-	ArrayList<Person> notablePerson;
+	ChotaPerson chairPerson;
+	ArrayList<ChotaPerson> notablePerson;
 	String image;
 	String history;
 
-	public Party(String name, String ideology, Person chairPerson, ArrayList<Person> notablePerson, String image,
-			String history) {
+	public Party(String name, String ideology, ChotaPerson chairPerson, ArrayList<ChotaPerson> notablePerson, String image,
+			String histroy) {
 		super();
 		this.name = name;
 		this.ideology = ideology;
@@ -40,19 +40,19 @@ public class Party {
 		this.ideology = ideology;
 	}
 
-	public Person getChairPerson() {
+	public ChotaPerson getChairPerson() {
 		return chairPerson;
 	}
 
-	public void setChairPerson(Person chairPerson) {
+	public void setChairPerson(ChotaPerson chairPerson) {
 		this.chairPerson = chairPerson;
 	}
 
-	public ArrayList<Person> getNotablePerson() {
+	public ArrayList<ChotaPerson> getNotablePerson() {
 		return notablePerson;
 	}
 
-	public void setNotablePerson(ArrayList<Person> notablePerson) {
+	public void setNotablePerson(ArrayList<ChotaPerson> notablePerson) {
 		this.notablePerson = notablePerson;
 	}
 
