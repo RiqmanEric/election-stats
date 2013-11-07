@@ -7,6 +7,9 @@ angular.module('esi', ['esi.filters', 'esi.services', 'esi.directives', 'esi.con
     $routeProvider
     .when('/', {templateUrl: 'partials/home.html', controller: 'HomeCntl'})
     .when('/party/:partyname', {templateUrl: 'partials/party.html', controller: 'PartyCntl'})
+    .when('/state/:statename', {templateUrl: 'partials/state.html', controller: 'StateCntl'})
+    .when('/person/:personname/:dob', {templateUrl: 'partials/person.html', controller: 'PersonCntl'})
+    .when('/constituency/:statename/:constituencyname', {templateUrl: 'partials/constituency.html', controller: 'ConstituencyCntl'})
     .otherwise({redirectTo: '/'});
 
     // $locationProvider.html5Mode(true);

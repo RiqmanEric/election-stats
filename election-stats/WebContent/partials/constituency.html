@@ -1,0 +1,32 @@
+	<div class="row" id="Info">
+		<div class="small-12 large-12 columns" id="Constituencyinfo">
+			<div class="row">
+				<div class="small-12 large-12 columns Persons">
+					<table class="small-12 large-12 columns">
+						<tr>
+							<td ><h6 class="fn" >Constituency Name </h6></td><td class="divider"></td><td id = "constituencyname"> <a href="#">{{constituency.name}}</a></td>
+						</tr>
+						<tr>
+							<td ><h6 class="fn" >State Name </h6></td><td class="divider"></td><td id = "statename"> <a href="#">{{constituency.statename}}</a></td>
+						</tr>
+
+						<tr>
+							<td ><h6 class="fn">Notable Persons </h6></td><td class="divider"></td><td> 
+							<a ng-repeat="person in constituency.notablePerson" href="#{{person.name}}">{{person.name}}, </a>
+
+
+							</td>
+						</tr>
+					</table>
+				</div>
+		</div>
+			<div class="row">
+				<div class="small-12 large-12 columns History">
+					<h5 class="fn">Facts</h5>
+					<p>
+					{{constituency.fact}}
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>

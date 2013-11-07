@@ -210,3 +210,75 @@ function PartyCntl($scope, $route, Party, List, menuService, dataService){
 		dataService.updateGet(true);
 	});
 }
+
+function StateCntl($scope, $route, State, List, menuService, dataService){
+	var statePromise = State.get($route.current.params.statename);
+	statePromise.then(function(s){
+		$scope.state = s;
+		$scope.filters = [];
+		var filterPromiseE = List.get("election", {});
+		filterPromiseE.then(function(elections){
+			$scope.filters.push({
+				type: "election",
+				values: elections,
+				value: elections[0]
+			});
+			dataService.updateFilters($scope.filters);
+			var filterPromiseS = List.get(s.name, {});
+			filterPromiseS.then(function(constituency){
+				$scope.filters.push({
+					type: "constituency",
+					values: constituency,
+					value: constituency[0]
+				});
+				dataService.updateFilters($scope.filters);
+			});
+		});
+
+		menuService.update({
+			title: $scope.state.name
+		});
+		dataService.updateState($scope.state.name);
+		dataService.updateGet(true);
+	});
+}
+
+function ConstituencyCntl($scope, $route, Constituency, List, menuService, dataService){
+	var constituencyPromise = Constituency.get($route.current.params.statename,$route.current.params.constituencyname);
+	constituencyPromise.then(function(c){
+		$scope.constituency = c;
+		$scope.filters = [];
+		var filterPromiseE = List.get("election", {});
+		filterPromiseE.then(function(elections){
+			$scope.filters.push({
+				type: "election",
+				values: elections,
+				value: elections[0]
+			});
+			dataService.updateFilters($scope.filters);
+		});
+
+		menuService.update({
+			title: $scope.constituency.name
+		});
+		dataService.updateConstituency($scope.constituency.name);
+		dataService.updateState($scope.constituency.state.name);
+		dataService.updateGet(true);
+	});
+}
+function PersonCntl($scope, $route, Person, List, menuService, dataService){
+	var personPromise = Person.get($route.current.params.personname,$route.current.params.dob);
+	personPromise.then(function(p){
+		$scope.person = p;
+		$scope.filters = [];
+		menuService.update({
+			title: $scope.person.name
+		});
+		dataService.updatePerson({
+			name: $scope.person.name,
+			dob: $scope.person.dob
+
+		});
+		dataService.updateGet(true);
+	});
+}

@@ -67,6 +67,39 @@ angular.module('esi.services', []).service('menuService', function() {
 		});
 	};
 	return Party;
+}).factory('State', function($http) {
+	var State = function(data) {
+		angular.extend(this, data);
+	}
+
+	State.get = function(name) {
+		return $http.get('/election-stats/api/state/' + name).then(function(response) {
+			return new State(response.data);
+		});
+	};
+	return State;
+}).factory('Person', function($http) {
+	var Person = function(data) {
+		angular.extend(this, data);
+	}
+
+	Person.get = function(name,dob) {
+		return $http.get('/election-stats/api/person/' + name+"/"+dob).then(function(response) {
+			return new Person(response.data);
+		});
+	};
+	return Person;
+}).factory('Constituency', function($http) {
+	var Constituency = function(data) {
+		angular.extend(this, data);
+	}
+
+	Constituency.get = function(name,statename) {
+		return $http.get('/election-stats/api/constituency/' + statename+"/"+name).then(function(response) {
+			return new Constituency(response.data);
+		});
+	};
+	return Constituency;
 }).factory('Candidates', function($http) {
 	var Candidates = function(data) {
 		angular.extend(this, data);

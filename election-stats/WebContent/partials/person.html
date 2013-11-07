@@ -1,0 +1,43 @@
+	<div class="row" id="Info">
+		<div class="small-12 large-12 columns" id="Person_info">
+			<div class="row">
+					<div class="small-2 large-2 columns" id="img">
+						<img src="img/candidates/{{person.image}}">
+					</div>
+					<div class="small-8 large-8 pull-1 columns panel  radius" id="Info">
+					<table class="small-12 large-12 columns">
+						<tr id = "Name">
+							<td ><h6 class="fn" >Name </h6></td><td class="divider"></td><td > <a href="#/person/{{person.name}}">{{person.name}}</a></td>
+						</tr>
+						<tr id ="Active Relatives"> 
+							<td ><h6 class="fn">Active Relatives </h6></td><td class="divider"></td><td> 
+								<a ng-repeat="relative in person.activeRelative" href="#/person/{{relative.name}}/{{relative.dob}}">{{relative.name}}, </a>
+							</td>
+						</tr>
+						<tr id="DOB">
+							<td><h6 class="fn" >Date Of Birth </h6>
+							</td><td class="divider"></td>
+							<td> {{person.dob}}
+							</td>
+						</tr>
+						<tr id="SEX">
+							<td><h6 class="fn" >Sex </h6>
+							</td><td class="divider"></td>
+							<td> {{person.sex}}
+							</td>
+						</tr>
+					</table>
+					</div> 
+			</div>
+
+			<div class="row">
+				<div class="small-12 large-12 columns History">
+					<h5 class="fn">History</h5>
+					<p>
+						{{person.history}}
+					</p>
+				</div>
+
+			</div>
+		</div>
+	</div>
