@@ -6,24 +6,35 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Candidate {
 	int candidateID;
 	int votes;
+	float percentVotes;
 	int year;
 	String result;
 	String party;
 	String constituency;
 	String state;
-	ChotaPerson person;
+	Person person;
 	
-	public Candidate(int candidateID, int votes, int year, String result,
-			String party, String constituency, String state, ChotaPerson person) {
+	public Candidate(int candidateID, int votes, float percentVotes, int year,
+			String result, String party, String constituency, String state,
+			Person person) {
 		super();
 		this.candidateID = candidateID;
 		this.votes = votes;
+		this.percentVotes = percentVotes;
 		this.year = year;
 		this.result = result;
 		this.party = party;
 		this.constituency = constituency;
 		this.state = state;
 		this.person = person;
+	}
+
+	public float getPercentVotes() {
+		return percentVotes;
+	}
+
+	public void setPercentVotes(float percentVotes) {
+		this.percentVotes = percentVotes;
 	}
 
 	public int getCandidateID() {
@@ -82,11 +93,11 @@ public class Candidate {
 		this.state = state;
 	}
 
-	public ChotaPerson getPerson() {
+	public Person getPerson() {
 		return person;
 	}
 
-	public void setPerson(ChotaPerson person) {
+	public void setPerson(Person person) {
 		this.person = person;
 	}	
 }

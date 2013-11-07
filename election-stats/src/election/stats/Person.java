@@ -3,20 +3,31 @@ package election.stats;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class ChotaPerson {
+public class Person {
 	String name;
 	String dob;
 	String photo;
+	String history;
 	String sex;
 
-	public ChotaPerson(String name, String dob, String photo, String sex) {
+	public Person(String name, String dob, String photo, String history,
+			String sex) {
 		super();
 		this.name = name;
 		this.dob = dob;
 		this.photo = photo;
+		this.history = history;
 		this.sex = sex;
 	}
-	
+
+	public String getHistory() {
+		return history;
+	}
+
+	public void setHistory(String history) {
+		this.history = history;
+	}
+
 	public String getPhoto() {
 		return photo;
 	}

@@ -24,10 +24,10 @@ Create Table ActiveRelatives(
 Create Table Party(
 	Name					VARCHAR(100),
 	Ideology				TEXT,
-	History					OID,
+	History					VARCHAR(2000),
 	NumberOfFollowers		BIGINT,
 	Existence				BOOLEAN,
-	ElectionSymbol			OID,
+	ElectionSymbol			VARCHAR(20),
 	NumberOfMembersInParliament	INT,
 	ChairPersonName			VARCHAR(60),
 	ChairPersonDOB			DATE,
@@ -226,8 +226,5 @@ Create Table ElectionStarter(
 	PRIMARY KEY (ID,Year),
 	FOREIGN KEY (ID) REFERENCES Starter(ID),
 	FOREIGN KEY (Year) REFERENCES Election (Year)
-
-
-
 );
 

@@ -9,13 +9,13 @@ public class Constituency {
 	String name;
 	String state;
 	String facts;
-	int foundationYear;
+	String foundationYear;
 	String majorParty;
-	ArrayList<ChotaPerson> notablePerson;
+	ArrayList<Person> notablePerson;
 	
 	public Constituency(String name, String state, String facts,
-			int foundationYear, String majorParty,
-			ArrayList<ChotaPerson> notablePerson) {
+			String foundationYear, String majorParty,
+			ArrayList<Person> notablePerson) {
 		super();
 		this.name = name;
 		this.state = state;
@@ -49,11 +49,11 @@ public class Constituency {
 		this.facts = facts;
 	}
 
-	public int getFoundationYear() {
+	public String getFoundationYear() {
 		return foundationYear;
 	}
 
-	public void setFoundationYear(int foundationYear) {
+	public void setFoundationYear(String foundationYear) {
 		this.foundationYear = foundationYear;
 	}
 
@@ -65,11 +65,11 @@ public class Constituency {
 		this.majorParty = majorParty;
 	}
 
-	public ArrayList<ChotaPerson> getNotablePerson() {
+	public ArrayList<Person> getNotablePerson() {
 		return notablePerson;
 	}
 
-	public void setNotablePerson(ArrayList<ChotaPerson> notablePerson) {
+	public void setNotablePerson(ArrayList<Person> notablePerson) {
 		this.notablePerson = notablePerson;
 	}
 }
