@@ -24,4 +24,7 @@
 		<servlet-name>Jersey REST Service</servlet-name>
 		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
+	<listener>
+    	<listener-class>election.stats.ServletContextClass</listener-class>
+	</listener>
 </web-app>
