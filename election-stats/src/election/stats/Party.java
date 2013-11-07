@@ -11,17 +11,17 @@ public class Party {
 	Person chairPerson;
 	ArrayList<Person> notablePerson;
 	String image;
-	String histroy;
+	String history;
 
 	public Party(String name, String ideology, Person chairPerson, ArrayList<Person> notablePerson, String image,
-			String histroy) {
+			String history) {
 		super();
 		this.name = name;
 		this.ideology = ideology;
 		this.chairPerson = chairPerson;
 		this.notablePerson = notablePerson;
 		this.image = image;
-		this.histroy = histroy;
+		this.history = history;
 	}
 
 	public String getName() {
@@ -64,11 +64,11 @@ public class Party {
 		this.image = image;
 	}
 
-	public String getHistroy() {
-		return histroy;
+	public String getHistory() {
+		return history;
 	}
 
-	public void setHistroy(String histroy) {
-		this.histroy = histroy;
+	public void setHistory(String histroy) {
+		this.history = histroy;
 	}
 }
