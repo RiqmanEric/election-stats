@@ -94,7 +94,7 @@ angular.module('esi.services', []).service('menuService', function() {
 		angular.extend(this, data);
 	}
 
-	Constituency.get = function(name,statename) {
+	Constituency.get = function(statename,name) {
 		return $http.get('/election-stats/api/constituency/' + statename+"/"+name).then(function(response) {
 			return new Constituency(response.data);
 		});
@@ -106,8 +106,8 @@ angular.module('esi.services', []).service('menuService', function() {
 	}
 
 	Candidates.get = function(filter) {
-		return $http.get('/election-stats/api/candidates', {params: filter}).then(function(response) {
-			return new Candidates(response.data);
+		return $http.get('/election-stats/api/candidate', {params: filter}).then(function(response) {
+			return new Candidates({candidates: response.data});
 		});
 	};
 	return Candidates;
@@ -117,8 +117,8 @@ angular.module('esi.services', []).service('menuService', function() {
 	}
 
 	Discussions.get = function(filter, count) {
-		return $http.get('/election-stats/api/discussions/' + count, {params: filter}).then(function(response) {
-			return new Discussions(response.data);
+		return $http.get('/election-stats/api/discussion/' + count, {params: filter}).then(function(response) {
+			return new Discussions({discussions: response.data});
 		});
 	};
 	return Discussions;
@@ -129,7 +129,7 @@ angular.module('esi.services', []).service('menuService', function() {
 
 	List.get = function(type, para) {
 		return $http.get('/election-stats/api/list/' + type, {params: para}).then(function(response) {
-			return new List(response.data);
+			return new List({list: response.data});
 		});
 	};
 	return List;

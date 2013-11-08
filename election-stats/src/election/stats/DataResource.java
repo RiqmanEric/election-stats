@@ -219,6 +219,27 @@ public class DataResource {
 	}
 	
 	@GET
+	@Path("list/election")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<String> getElectionList() throws SQLException {
+		
+		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
+		ArrayList<String> toReturn = new ArrayList<String>();
+		
+		// Querying State List
+		String query = "select year from Election";
+		Statement queryDB = connectDB.conn.createStatement(); 	
+		ResultSet rs = queryDB.executeQuery(query);
+		while (rs.next()) {
+			//name of the state
+			String name = String.valueOf(rs.getInt(1));
+			toReturn.add(name);
+		}
+		
+		return toReturn;
+	}
+	
+	@GET
 	@Path("list/{stateName}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public ArrayList<String> getConstituencyList(@PathParam("stateName") String statename) throws SQLException {
@@ -255,22 +276,22 @@ public class DataResource {
 		
 		// Querying State List
 		String query = "select * from Candidate where candidateID > 0";
-		if(constituencyName != ""){
+		if(!constituencyName.isEmpty()){
 			query = query + " and constituencyName = '" + constituencyName + "'";
 		}
-		if(stateName != ""){
+		if(!stateName.isEmpty()){
 			query = query + " and stateName = '" + stateName + "'";
 		}
-		if(electionYear != ""){
+		if(!electionYear.isEmpty()){
 			query = query + " and year = " + String.valueOf(electionYear);
 		}
-		if(partyName != ""){
+		if(!partyName.isEmpty()){
 			query = query + " and partyName = '" + partyName + "'";
 		}
-		if(personName != ""){
+		if(!personName.isEmpty()){
 			query = query + " and personName = '" + personName + "'";
 		}
-		if(personDOB != ""){
+		if(!personDOB.isEmpty()){
 			query = query + " and personDOB = '" + personDOB + "'";
 		}
 		query = query + ";";
@@ -393,7 +414,7 @@ public class DataResource {
 		ResultSet rs;
 		
 		//Discussions about constituency
-		if(constituencyName != "" && stateName != ""){
+		if(!constituencyName.isEmpty() && !stateName.isEmpty()){
 			query = "select id from constituencyStarter where constituencyname = '" + constituencyName + "' and stateName = '" + stateName + "';";
 			rs = queryDB.executeQuery(query);
 			while (rs.next()){
@@ -402,7 +423,7 @@ public class DataResource {
 		}
 		
 		//Discussion about election
-		if(electionYear != ""){
+		if(!electionYear.isEmpty()){
 			query = "select id from electionStarter where year = " + electionYear + ";";
 			rs = queryDB.executeQuery(query);
 			while (rs.next()){
@@ -411,7 +432,7 @@ public class DataResource {
 		}
 		
 		//Discussion about party
-		if(partyName != ""){
+		if(!partyName.isEmpty()){
 			query = "select id from partyStarter where partyName = '" + partyName + "';";
 			rs = queryDB.executeQuery(query);
 			while (rs.next()){
@@ -420,7 +441,7 @@ public class DataResource {
 		}
 		
 		//Discussion about person
-		if(personName != "" && personDOB != ""){
+		if(!personName.isEmpty() && !personDOB.isEmpty()){
 			query = "select id from personStarter where personName = '" + personName + "' and personDOB = '" + personDOB + "';";
 			rs = queryDB.executeQuery(query);
 			while (rs.next()){
