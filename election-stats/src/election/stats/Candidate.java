@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Candidate {
 	int candidateID;
 	int votes;
-	float percentVotes;
+	Double percentVotes;
 	int year;
 	String result;
 	String party;
@@ -14,7 +14,7 @@ public class Candidate {
 	String state;
 	Person person;
 	
-	public Candidate(int candidateID, int votes, float percentVotes, int year,
+	public Candidate(int candidateID, int votes, Double percentVotes, int year,
 			String result, String party, String constituency, String state,
 			Person person) {
 		super();
@@ -29,11 +29,11 @@ public class Candidate {
 		this.person = person;
 	}
 
-	public float getPercentVotes() {
+	public Double getPercentVotes() {
 		return percentVotes;
 	}
 
-	public void setPercentVotes(float percentVotes) {
+	public void setPercentVotes(Double percentVotes) {
 		this.percentVotes = percentVotes;
 	}
 

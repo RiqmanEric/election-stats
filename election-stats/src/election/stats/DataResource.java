@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
@@ -53,7 +54,7 @@ public class DataResource {
 			else if(chairpersondob == null){
 				chairpersondob = "N/A";
 			}
-			toReturn.setChairPerson(new Person(chairpersonname, chairpersondob, "N/A", "N/A", "N/A"));
+			toReturn.setChairPerson(new Person(chairpersonname, chairpersondob, "N/A", "N/A", "N/A", null));
 			
 			//History of the party
 			String history = rs.getString(3);
@@ -80,7 +81,7 @@ public class DataResource {
 			if(notablePersonDOB == null){
 				notablePersonDOB = "N/A";
 			}
-			notablePerson.add(new Person(notablePersonName, notablePersonDOB, "N/A", "N/A", "N/A"));			
+			notablePerson.add(new Person(notablePersonName, notablePersonDOB, "N/A", "N/A", "N/A", null));			
 		}
 		toReturn.setNotablePerson(notablePerson);
 		
@@ -93,7 +94,7 @@ public class DataResource {
 	public Person getPerson(@PathParam("personname") String personname, @PathParam("personDOB") String persondob) throws SQLException {
 		
 		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
-		Person toReturn = new Person(personname, persondob, null, null, null);
+		Person toReturn = new Person(personname, persondob, null, null, null, null);
 		
 		// Querying Person Info
 		String query = "select * from Person where name = '" + personname + "' and DOB = '" + persondob + "';";
@@ -119,6 +120,30 @@ public class DataResource {
 			toReturn.setSex(sex);
 		}
 		
+		//Active relatives of the person
+		ArrayList<Person> activeRelatives = new ArrayList<Person> ();
+		query = "select * from ActiveRelatives where name1 = '" + personname + "' and DOB1 = '" + persondob + "';";
+		rs = queryDB.executeQuery(query);
+		while (rs.next()) {
+			String name  = rs.getString(2);
+			String dob = rs.getString(4);
+			
+			Person person = new Person(name, dob, null, null, null, null);
+			
+			activeRelatives.add(person);			
+		}
+		
+		query = "select * from ActiveRelatives where name2 = '" + personname + "' and DOB2 = '" + persondob + "';";
+		rs = queryDB.executeQuery(query);
+		while (rs.next()) {
+			String name  = rs.getString(1);
+			String dob = rs.getString(3);
+			
+			Person person = new Person(name, dob, null, null, null, null);
+			
+			activeRelatives.add(person);			
+		}
+		toReturn.setActiveRelatives(activeRelatives);
 		return toReturn;
 	}
 	
@@ -190,7 +215,7 @@ public class DataResource {
 			if(notablePersonDOB == null){
 				notablePersonDOB = "N/A";
 			}
-			notablePerson.add(new Person(notablePersonName, notablePersonDOB, "N/A", "N/A", "N/A"));			
+			notablePerson.add(new Person(notablePersonName, notablePersonDOB, "N/A", "N/A", "N/A", null));			
 		}
 		toReturn.setNotablePerson(notablePerson);	
 		
@@ -233,6 +258,27 @@ public class DataResource {
 		while (rs.next()) {
 			//name of the state
 			String name = String.valueOf(rs.getInt(1));
+			toReturn.add(name);
+		}
+		
+		return toReturn;
+	}
+	
+	@GET
+	@Path("list/party")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<String> getPartyList() throws SQLException {
+		
+		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
+		ArrayList<String> toReturn = new ArrayList<String>();
+		
+		// Querying State List
+		String query = "select name from Party";
+		Statement queryDB = connectDB.conn.createStatement(); 	
+		ResultSet rs = queryDB.executeQuery(query);
+		while (rs.next()) {
+			//name of the state
+			String name = rs.getString(1);
 			toReturn.add(name);
 		}
 		
@@ -300,7 +346,7 @@ public class DataResource {
 		Statement queryDB = connectDB.conn.createStatement(); 	
 		ResultSet rs = queryDB.executeQuery(query);
 		while (rs.next()) {
-			Candidate candidate = new Candidate(0, 0, 0, 0, null, null, null, null, null);
+			Candidate candidate = new Candidate(0, 0, 0.0, 0, null, null, null, null, null);
 			
 			//id of the candidate
 			int id = rs.getInt(1);
@@ -350,13 +396,14 @@ public class DataResource {
 			String personname = rs.getString(8);
 			String persondob = rs.getString(9);	
 			
-			Person person = new Person(personname, persondob, "N/A", "N/A", "N/A");
+			Person person = new Person(personname, persondob, "N/A", "N/A", "N/A", null);
 			candidate.setPerson(person);
 						
 			toReturn.add(candidate);
 		}
 		
 		for(int i = 0; i < toReturn.size(); i++){
+			
 			Person person = toReturn.get(i).getPerson();
 			
 			//Person info of candidate
@@ -380,13 +427,16 @@ public class DataResource {
 			//Percent votes for the candidate
 			query = "Select * from stats where electionYear = '" + String.valueOf(toReturn.get(i).getYear()) + "' and constituencyName = '" + toReturn.get(i).getConstituency() + "' and stateName = '" + toReturn.get(i).getState() + "';";
 			rs2 = queryDB.executeQuery(query);
+			System.out.println(query);
 			if(!rs2.next()){
-				
+				toReturn.get(i).setPercentVotes(24.5);
 			}
 			else{
-				float percentage = 24;
+				Double percentage = 24.0;
 				int totalVotes = rs2.getInt(5);
-				if(totalVotes != 0) percentage = (toReturn.get(i).getVotes() * 100)/totalVotes;
+				if(totalVotes != 0) percentage = (double)(toReturn.get(i).getVotes() * 100)/totalVotes;
+				System.out.println(percentage);
+				System.out.println(totalVotes);
 				toReturn.get(i).setPercentVotes(percentage);			
 			}
 		}
@@ -479,6 +529,160 @@ public class DataResource {
 			}
 			
 			toReturn.add(discussion);
+		}
+		
+		return toReturn;
+	}
+	
+	@GET
+	@Path("stats/votePercentage")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<VotePercentage> getVotePercentageList(
+			@QueryParam("state") List<String> states,
+			@QueryParam("year") List<String> years,
+			@QueryParam("party") List<String> parties) throws SQLException {
+		
+		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
+		ArrayList<VotePercentage> toReturn = new ArrayList<VotePercentage>();
+		
+		String query = "";
+		Statement queryDB = connectDB.conn.createStatement();
+		ResultSet rs;
+		
+		if(states.get(0).equals("") || years.get(0).equals("") || parties.get(0).equals("")){
+			
+		}
+		else{
+			String stateSet = "(";
+			for(int i = 0; i < states.size(); i++){
+				stateSet += "'" + states.get(i) + "',";
+			}
+			stateSet = stateSet.substring(0, stateSet.length() - 1) + ")";
+			
+			String partySet = "(";
+			for(int i = 0; i < parties.size(); i++){
+				partySet += "'" + parties.get(i) + "',";
+			}
+			partySet = partySet.substring(0, partySet.length() - 1) + ")";
+			
+			String yearSet = "(";
+			for(int i = 0; i < years.size(); i++){
+				yearSet += years.get(i) + ",";
+			}
+			yearSet = yearSet.substring(0, yearSet.length() - 1) + ")";
+			
+			query = "select sum(votes), statename, partyname, year from (select * from candidate where statename in " + stateSet + " and partyname in " + partySet + " and year in " + yearSet + ") group by statename, partyname, year";
+			rs = queryDB.executeQuery(query);
+			
+			while (rs.next()){
+				toReturn.add(new VotePercentage(rs.getInt(1), 0.0, rs.getString(2), rs.getString(3), rs.getString(4)));	
+			}
+			
+			for(int i = 0; i < toReturn.size(); i++){
+				query = "select sum(votes) from stats where statename = '" + toReturn.get(i).getState() + "' and electionYear = " + toReturn.get(i).getYear() + ";";
+				rs = queryDB.executeQuery(query);
+				toReturn.get(i).setPercentage((double)(toReturn.get(i).getVotes() * 100)/rs.getInt(1));
+			}
+		}
+		
+		return toReturn;
+	}
+	
+	@GET
+	@Path("stats/femaleCandidates")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<FemaleCandidates> getFemaleCandidateList(
+			@QueryParam("state") List<String> states,
+			@QueryParam("year") List<String> years,
+			@QueryParam("party") List<String> parties) throws SQLException {
+		
+		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
+		ArrayList<FemaleCandidates> toReturn = new ArrayList<FemaleCandidates>();
+		
+		String query = "";
+		Statement queryDB = connectDB.conn.createStatement();
+		ResultSet rs;
+		
+		if(states.get(0).equals("") || years.get(0).equals("") || parties.get(0).equals("")){
+			
+		}
+		else{
+			String stateSet = "(";
+			for(int i = 0; i < states.size(); i++){
+				stateSet += "'" + states.get(i) + "',";
+			}
+			stateSet = stateSet.substring(0, stateSet.length() - 1) + ")";
+			
+			String partySet = "(";
+			for(int i = 0; i < parties.size(); i++){
+				partySet += "'" + parties.get(i) + "',";
+			}
+			partySet = partySet.substring(0, partySet.length() - 1) + ")";
+			
+			String yearSet = "(";
+			for(int i = 0; i < years.size(); i++){
+				yearSet += years.get(i) + ",";
+			}
+			yearSet = yearSet.substring(0, yearSet.length() - 1) + ")";
+			
+			query = "select count(*), statename, partyname, year from (select * from candidate, person where statename in " + stateSet + " and partyname in " + partySet + " and year in " + yearSet + " and person.sex = 'F' and candidate.personname = person.name and candidate.persondob = person.dob) as x group by statename, partyname, year;";
+			System.out.println(query);
+			rs = queryDB.executeQuery(query);
+			
+			
+			while (rs.next()){
+				toReturn.add(new FemaleCandidates(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4)));	
+			}
+		}
+		
+		return toReturn;
+	}
+	
+	@GET
+	@Path("stats/winners")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<Winners> getWinnersList(
+			@QueryParam("state") List<String> states,
+			@QueryParam("year") List<String> years,
+			@QueryParam("party") List<String> parties) throws SQLException {
+		
+		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
+		ArrayList<Winners> toReturn = new ArrayList<Winners>();
+		
+		String query = "";
+		Statement queryDB = connectDB.conn.createStatement();
+		ResultSet rs;
+		
+		if(states.get(0).equals("") || years.get(0).equals("") || parties.get(0).equals("")){
+			
+		}
+		else{
+			String stateSet = "(";
+			for(int i = 0; i < states.size(); i++){
+				stateSet += "'" + states.get(i) + "',";
+			}
+			stateSet = stateSet.substring(0, stateSet.length() - 1) + ")";
+			
+			String partySet = "(";
+			for(int i = 0; i < parties.size(); i++){
+				partySet += "'" + parties.get(i) + "',";
+			}
+			partySet = partySet.substring(0, partySet.length() - 1) + ")";
+			
+			String yearSet = "(";
+			for(int i = 0; i < years.size(); i++){
+				yearSet += years.get(i) + ",";
+			}
+			yearSet = yearSet.substring(0, yearSet.length() - 1) + ")";
+			
+			query = "select count(*), statename, partyname, year from (select * from candidate where statename in " + stateSet + " and partyname in " + partySet + " and year in " + yearSet + " and results = true) AS x group by statename, partyname, year;";
+			System.out.println(query);
+			rs = queryDB.executeQuery(query);
+			
+			
+			while (rs.next()){
+				toReturn.add(new Winners(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4)));	
+			}
 		}
 		
 		return toReturn;
