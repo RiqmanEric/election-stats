@@ -8,14 +8,13 @@
 				<form class="custom">
 					<div class="row">
 					<div class="large-8 columns">
-						<select id="Filter_Year">
-							<option>Year</option>
-							<option>2004</option>
-							<option>1993</option>
+						<select ng-model=election>
+							<option>Election</option>
+							<option ng-repeat="e in elections" callfoundation>{{e}}</option>
 						</select>
 					 </div>
 						<div class="large-4 pull-1 small-4 columns" id="Filter_Submit">
-							<a href="#" class="button postfix submit">GO</a>
+							<a href="#/election/{{election}}" class="button postfix submit">GO</a>
 						</div>
 				 </div>
 				</form>
@@ -26,14 +25,13 @@
 				<form class="custom">
 					<div class="row">
 					<div class="large-8 columns">
-						<select id="Filter_Year">
-							<option>Year</option>
-							<option>2004</option>
-							<option>1993</option>
+						<select ng-model=party>
+							<option>Party</option>
+							<option ng-repeat="p in parties" callfoundation>{{p}}</option>
 						</select>
 					 </div>
 						<div class="large-4 pull-1 small-4 columns" id="Filter_Submit">
-							<a href="#" class="button postfix submit">GO</a>
+							<a href="#/party/{{party}}" class="button postfix submit">GO</a>
 						</div>
 				 	</div>
 				</form>
@@ -48,14 +46,13 @@
 				<form class="custom">
 					<div class="row">
 					<div class="large-8 columns">
-						<select id="Filter_Year">
-							<option>Year</option>
-							<option>2004</option>
-							<option>1993</option>
+						<select ng-model=state>
+							<option>State</option>
+							<option ng-repeat="s in states" callfoundation>{{s}}</option>
 						</select>
 					 </div>
 						<div class="large-4 pull-1 small-4 columns" id="Filter_Submit">
-							<a href="#" class="button postfix submit">GO</a>
+							<a href="#/state/{{state}}" class="button postfix submit">GO</a>
 						</div>
 				 </div>
 				</form>
@@ -85,28 +82,26 @@
 				<div class="row">
 					<div class="large-4 columns">
 
-						<select id="Filter_Year">
-							<option>Year</option>
-							<option>2004</option>
-							<option>1993</option>
+						<select ng-model=constituency.state>
+							<option>State</option>
+							<option ng-repeat="state in states" callfoundation>{{state}}</option>
 						</select>
 
 					 </div>
 					 <div class="large-4 columns">
 
-						<select id="Filter_Year">
-							<option>Year</option>
-							<option>2004</option>
-							<option>1993</option>
+						<select ng-model=constituency.name>
+							<option>Constituency</option>
+							<option ng-repeat="c in constituencies" callfoundation>{{c}}</option>
 						</select>
 
 					 </div>
 						<div class="large-4	small-5	columns" id="Filter_Submit">
-							<a href="#" class="button postfix submit">GO</a>
+							<a href="#/constituency/{{constituency.state}}/{{constituency.name}}" class="button postfix submit">GO</a>
 						</div>
 				 </div>
 				</form>
 			</div>
 			</div>
-	</div>		
+	</div>
 </div>

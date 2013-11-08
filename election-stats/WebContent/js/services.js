@@ -4,46 +4,60 @@
 
 angular.module('esi.services', []).service('menuService', function() {
 	var menu = {
-		title : ""
+		title: "",
+		link: "#",
+		alert: {
+			show: false,
+			content: ""
+		}
 	};
 	return {
-		update : function(m) {
+		update: function(m) {
 			menu.title = m.title;
+			menu.link = m.link;
+			menu.alert.show = false;
+			menu.alert.content = "";
 		},
-		getMenu : function() {
+		error: function(msg){
+			menu.alert.show = true;
+			menu.alert.content = msg;
+		},
+		getMenu: function() {
 			return menu;
 		}
 	}
 }).service('dataService', function() {
 	var data = {
 		get: false,
-		filters : [],
-		party : "",
-		state : "",
-		election : "",
-		constituency : "",
+		filters: [],
+		party: "",
+		state: "",
+		election: "",
+		constituency: "",
 		person: {
 			name: "",
 			dob: "",
 		}
 	};
+	var candidates = [];
+	var discussions = [];
 	return {
-		updateFilters : function(filters) {
+		updateFilters: function(filters) {
 			while (data.filters.pop());
 			filters.forEach(function(filter) {
 				data.filters.push(filter);
 			});
 		},
-		updateParty : function(party) {
+		updateParty: function(party) {
 			data.party = party;
 		},
-		updateState : function(state) {
+		updateState: function(state) {
 			data.state = state;
 		},
-		updateElection : function(election) {
+		updateElection: function(election) {
 			data.election = election;
 		},
-		updateConstituency : function(constituency) {
+		updateConstituency: function(constituency) {
 			data.constituency = constituency;
 		},
 		updateGet: function(get){
@@ -52,8 +66,38 @@ angular.module('esi.services', []).service('menuService', function() {
 		updatePerson: function(person){
 			data.person = person;
 		},
-		getData : function() {
+		getData: function() {
 			return data;
+		},
+		updateCandidates: function(cand) {
+			while (candidates.pop());
+			cand.candidates.forEach(function(c) {
+				candidates.push(c);
+			});
+		},
+		updateDiscussions: function(disc) {
+			while (discussions.pop());
+			disc.discussions.forEach(function(d) {
+				discussions.push(d);
+			});
+		},
+		getDiscussions: function() {
+			return discussions;
+		},
+		getCandidates: function(){
+			return candidates;
+		},
+		reset: function(){
+			data.get = false;
+			while (data.filters.pop());
+			data.party = "";
+			data.state = "";
+			data.election = "";
+			data.constituency = "";
+			data.person.name = "";
+			data.person.dob = "";
+			while(candidates.pop());
+			while(discussions.pop());
 		}
 	};
 }).factory('Party', function($http) {

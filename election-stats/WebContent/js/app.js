@@ -10,6 +10,7 @@ angular.module('esi', ['esi.filters', 'esi.services', 'esi.directives', 'esi.con
     .when('/state/:statename', {templateUrl: 'partials/state.html', controller: 'StateCntl'})
     .when('/person/:personname/:dob', {templateUrl: 'partials/person.html', controller: 'PersonCntl'})
     .when('/constituency/:statename/:constituencyname', {templateUrl: 'partials/constituency.html', controller: 'ConstituencyCntl'})
+    .when('/error', {templateUrl: 'partials/error.html'})
     .otherwise({redirectTo: '/'});
 
     // $locationProvider.html5Mode(true);

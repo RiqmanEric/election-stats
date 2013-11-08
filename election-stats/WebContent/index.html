@@ -2,7 +2,7 @@
 <html lang="en" ng-app="esi">
 <head>
 	<meta charset="utf-8">
-	<title>My AngularJS App</title>
+	<title>Election Statistics of India</title>
 	<!-- Foundation CSS -->
 	<link rel="stylesheet" href="lib/foundation/css/normalize.css" />
 	<link rel="stylesheet" href="lib/foundation/css/foundation.css" />
@@ -11,13 +11,17 @@
 </head>
 <body>
 	<div ng-controller="MenuCntl">
+		<div data-alert class="alert-box alert" ng-show=menu.alert.show>
+		  {{menu.alert.content}}
+		  <a href="#" class="close">&times;</a>
+		</div>
 		<div class="row .radius">
 			<nav class="top-bar">
 					<ul class="title-area">
 						<!-- Title Area -->
 						<li class="name">
 							<h1>
-								<a href="#">
+								<a href="{{menu.link}}">
 									{{menu.title}}
 								</a>
 							</h1>
@@ -86,7 +90,7 @@
 			<div class="small-12 large-12 columns" >
 				<div class="small-6 large-6	columns" id="candidate_container">
 					<div class="row panel" ng-repeat="candidate in candidates">
-						<div class="large-3 columns small-2"><img src="{{imagesrc}}/candidates/{{candidate.person.photo}}" /></div>
+						<div class="large-3 columns small-2"><img ng-src="{{imagesrc}}/candidates/{{candidate.person.photo}}" /></div>
 						<div class="large-8 columns" style="font-size:12px;">
 							<ul class="inline-list cand_info">
 								<li><strong>Name:</strong> </li>

@@ -4,14 +4,14 @@
 				<div class="small-12 large-12 columns Persons">
 					<table class="small-12 large-12 columns">
 						<tr>
-							<td ><h6 class="fn" >Constituency Name </h6></td><td class="divider"></td><td id = "constituencyname"> <a href="#/constituency/{{constituency.state}}/{{constituency.name}}">{{constituency.name}}</a></td>
+							<td class="small-4 large-4"><h6 class="fn" >Constituency Name </h6></td><td class="small-8 large-8"> <a href="#/constituency/{{constituency.state}}/{{constituency.name}}">{{constituency.name}}</a></td>
 						</tr>
 						<tr>
-							<td ><h6 class="fn" >State Name </h6></td><td class="divider"></td><td id = "statename"> <a href="#/state/{{constituency.state}}">{{constituency.state}}</a></td>
+							<td class="small-4 large-4"><h6 class="fn" >State Name </h6></td><td class="small-8 large-8"> <a href="#/state/{{constituency.state}}">{{constituency.state}}</a></td>
 						</tr>
 
 						<tr>
-							<td ><h6 class="fn">Notable Persons </h6></td><td class="divider"></td><td> 
+							<td class="small-4 large-4"><h6 class="fn">Notable Persons </h6></td><td class="small-8 large-8"> 
 							<a ng-repeat="person in constituency.notablePerson" href="#/person/{{person.name}}/{{person.dob}}">{{person.name}}, </a>
 
 

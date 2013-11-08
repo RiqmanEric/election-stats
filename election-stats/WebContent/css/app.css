@@ -34,3 +34,4 @@
   background-color: #B6B6B4 ! important;
 }
 
+body { text-transform: capitalize; }

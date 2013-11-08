@@ -11,8 +11,10 @@ function MenuCntl($scope, menuService) {
 function DataCntl($scope, Candidates, Discussions, dataService){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	$scope.data = dataService.getData();
-	$scope.candidates = [];
-	$scope.discussions = [
+	$scope.candidates = dataService.getCandidates();
+	$scope.discussions = dataService.getDiscussions();
+	dataService.updateDiscussions({
+		discussions: [
 		{
 			content: "Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.",
 			user: "Someone",
@@ -58,27 +60,25 @@ function DataCntl($scope, Candidates, Discussions, dataService){
 				}
 			]
 		}
-	];
+	]});
 	if($scope.data.get){
-		var candidatePromise = Candidates.get({
+		Candidates.get({
 			election: $scope.data.election,
 			state: $scope.data.state,
 			constituency: $scope.data.constituency,
 			party: $scope.data.party,
 			personname: $scope.data.person.name,
 			persondob: $scope.data.person.dob,
-		});
-		candidatePromise.then(updateCandidates);
+		}).then(dataService.updateCandidates);
 	}
-	var discussionPromise = Discussions.get({
+	Discussions.get({
 		election: $scope.data.election,
 		state: $scope.data.state,
 		constituency: $scope.data.constituency,
 		party: $scope.data.party,
 		personname: $scope.data.person.name,
 		persondob: $scope.data.person.dob,
-	}, 0);
-	discussionPromise.then(updateDiscussion);
+	}, 0).then(dataService.updateDiscussion);
 
 	$scope.filter = function(){
 		$scope.data.filters.forEach(function(filter){
@@ -94,152 +94,193 @@ function DataCntl($scope, Candidates, Discussions, dataService){
 				$scope.data.person = filter.value;
 		});
 		if($scope.data.get){
-			var candidatePromise = Candidates.get({
+			Candidates.get({
 				election: $scope.data.election,
 				state: $scope.data.state,
 				constituency: $scope.data.constituency,
 				party: $scope.data.party,
 				personname: $scope.data.person.name,
 				persondob: $scope.data.person.dob,
-			});
-			candidatePromise.then(updateCandidates);
+			}).then(dataService.updateCandidates);
 		}
-		var discussionPromise = Discussions.get({
+		Discussions.get({
 			election: $scope.data.election,
 			state: $scope.data.state,
 			constituency: $scope.data.constituency,
 			party: $scope.data.party,
 			personname: $scope.data.person.name,
 			persondob: $scope.data.person.dob,
-		},0);
-		discussionPromise.then(updateDiscussion);
+		},0).then(dataService.updateDiscussion);
 	}
-	var updateCandidates = function(data){
-		while ($scope.candidates.pop());
-		data.candidates.forEach(function(candidate) {
-			$scope.candidates.push(candidate);
-		});
-		console.log($scope.candidates);
-	}
-	var updateDiscussion = function(data){
-		while ($scope.discussions.pop());
-		data.discussions.forEach(function(discussion) {
-			$scope.discussions.push(discussion);
-		});
-	}
-
 }
 
-function HomeCntl($scope, menuService, dataService){
+function HomeCntl($scope, menuService, dataService, List){
 	menuService.update({
-		title: "Home"
+		title: "Home",
+		link: "#"
 	});
-	dataService.updateParty("");
-	dataService.updateState("");
-	dataService.updateElection("");
-	dataService.updateConstituency("");
-	dataService.updateFilters([]);
-	dataService.updateGet(false);
+	dataService.reset();
+	$scope.elections = [];
+	$scope.states = [];
+	$scope.parties = [];
+	$scope.constituencies = [];
+
+	$scope.election = "Election";
+	$scope.state = "State";
+	$scope.party = "Party";
+	$scope.constituency = {
+		state: "State",
+		name: "Constituency"
+	}
+
+	List.get("election", {}).then(function(elections){
+		while($scope.elections.pop());
+		elections.list.forEach(function(e){ $scope.elections.push(e)});
+	}, function(err){
+		menuService.error("Elections list not available.");
+	});
+
+	List.get("state", {}).then(function(states){
+		while($scope.states.pop());
+		states.list.forEach(function(e){ $scope.states.push(e)});
+		$scope.states.sort();
+	}, function(err){
+		menuService.error("States list not available.");
+	});
+
+	List.get("party", {}).then(function(parties){
+		while($scope.parties.pop());
+		parties.list.forEach(function(e){ $scope.parties.push(e)});
+	}, function(err){
+		menuService.error("Parties list not available.");
+	});
+
+	$scope.$watch("constituency.state", function() {
+		if($scope.constituency.state!="State"){
+	        List.get($scope.constituency.state, {}).then(function(constituencies){
+				while($scope.constituencies.pop());
+				constituencies.list.forEach(function(e){ $scope.constituencies.push(e)});
+			}, function(err){
+				menuService.error("Constituency list not available.");
+			});
+	    }
+    });
 }
 
 function PartyCntl($scope, $route, Party, List, menuService, dataService){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
-	var partyPromise = Party.get($route.current.params.partyname);
-	partyPromise.then(function(p){
+	dataService.reset();
+	Party.get($route.current.params.partyname).then(function(p){
 		$scope.party = p;
 		$scope.filters = [];
-		var filterPromiseE = List.get("election", {});
-		filterPromiseE.then(function(elections){
+		menuService.update({
+			title: $scope.party.name,
+			link: "#/party/" + $scope.party.name
+		});
+		dataService.updateParty($scope.party.name);
+		dataService.updateGet(true);
+
+		List.get("election", {}).then(function(elections){
 			$scope.filters.push({
 				type: "election",
 				values: elections.list.reverse(),
 				value: elections.list[0]
 			});
 			dataService.updateFilters($scope.filters);
-			var filterPromiseS = List.get("state", {});
-			filterPromiseS.then(function(states){
+			List.get("state", {}).then(function(states){
 				$scope.filters.push({
 					type: "state",
-					values: states.list,
+					values: states.list.sort(),
 					value: states.list[0]
 				});
 				dataService.updateFilters($scope.filters);
+			}, function(err){
+				menuService.error("State list not available.");
 			});
+		}, function(err){
+			menuService.error("Elections list not available");
 		});
-
-		menuService.update({
-			title: $scope.party.name
-		});
-		dataService.updateParty($scope.party.name);
-		dataService.updateGet(true);
+	}, function(err){
+		menuService.error($route.current.params.partyname + " is not a valid party.");
 	});
 }
 
 function StateCntl($scope, $route, State, List, menuService, dataService){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
-	var statePromise = State.get($route.current.params.statename);
-	statePromise.then(function(s){
+	dataService.reset();
+	State.get($route.current.params.statename).then(function(s){
 		$scope.state = s;
 		$scope.filters = [];
-		var filterPromiseE = List.get("election", {});
-		filterPromiseE.then(function(elections){
-			$scope.filters.push({
-				type: "election",
-				values: elections.list,
-				value: elections.list[0]
-			});
-			dataService.updateFilters($scope.filters);
-			var filterPromiseS = List.get(s.name, {});
-			filterPromiseS.then(function(constituency){
-				$scope.filters.push({
-					type: "constituency",
-					values: constituency.list,
-					value: constituency.list[0]
-				});
-				dataService.updateFilters($scope.filters);
-			});
-		});
-
-		menuService.update({
-			title: $scope.state.name
+				menuService.update({
+			title: $scope.state.name,
+			link: "#/state/" + $scope.state.name
 		});
 		dataService.updateState($scope.state.name);
 		dataService.updateGet(true);
+
+		List.get("election", {}).then(function(elections){
+			$scope.filters.push({
+				type: "election",
+				values: elections.list.reverse(),
+				value: elections.list[0]
+			});
+			dataService.updateFilters($scope.filters);
+			List.get(s.name, {}).then(function(constituency){
+				$scope.filters.push({
+					type: "constituency",
+					values: constituency.list.sort(),
+					value: constituency.list[0]
+				});
+				dataService.updateFilters($scope.filters);
+			}, function(err){
+				menuService.error("Constituency list not available.");
+			});
+		}, function(err){
+			menuService.error("Elections list not available.");
+		});
+	}, function(err){
+		menuService.error($route.current.params.statename + " is not a valid state.");
 	});
 }
 
 function ConstituencyCntl($scope, $route, Constituency, List, menuService, dataService){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
-	var constituencyPromise = Constituency.get($route.current.params.statename,$route.current.params.constituencyname);
-	constituencyPromise.then(function(c){
+	dataService.reset();
+	Constituency.get($route.current.params.statename,$route.current.params.constituencyname).then(function(c){
 		$scope.constituency = c;
 		$scope.filters = [];
-		var filterPromiseE = List.get("election", {});
-		filterPromiseE.then(function(elections){
-			$scope.filters.push({
-				type: "election",
-				values: elections.list,
-				value: elections.list[0]
-			});
-			dataService.updateFilters($scope.filters);
-		});
-
 		menuService.update({
-			title: $scope.constituency.name
+			title: $scope.constituency.name,
+			link: "#/constituency/" + $scope.constituency.state + "/" + $scope.constituency.name
 		});
 		dataService.updateConstituency($scope.constituency.name);
 		dataService.updateState($scope.constituency.state);
 		dataService.updateGet(true);
+
+		List.get("election", {}).then(function(elections){
+			$scope.filters.push({
+				type: "election",
+				values: elections.list.reverse(),
+				value: elections.list[0]
+			});
+			dataService.updateFilters($scope.filters);
+		}, function(err){
+			menuService.error("Elections list not available.");
+		});
+
+	}, function(err){
+		menuService.error($route.current.params.constituencyname + ", " + $route.current.params.statename + " is not a valid constituency.");
 	});
 }
-function PersonCntl($scope, $route, Person, List, menuService, dataService){
+function PersonCntl($scope, $route, Person, List, menuService, dataService, Candidates, Discussions){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
-	var personPromise = Person.get($route.current.params.personname,$route.current.params.dob);
-	personPromise.then(function(p){
+	dataService.reset();
+	Person.get($route.current.params.personname,$route.current.params.dob).then(function(p){
 		$scope.person = p;
 		$scope.filters = [];
 		menuService.update({
-			title: $scope.person.name
+			title: $scope.person.name,
+			link: "#/person/" + $scope.person.name
 		});
 		dataService.updatePerson({
 			name: $scope.person.name,
@@ -247,5 +288,27 @@ function PersonCntl($scope, $route, Person, List, menuService, dataService){
 
 		});
 		dataService.updateGet(true);
+		$scope.data = dataService.getData();
+		console.log($scope.data);
+		if($scope.data.get){
+			Candidates.get({
+				election: $scope.data.election,
+				state: $scope.data.state,
+				constituency: $scope.data.constituency,
+				party: $scope.data.party,
+				personname: $scope.data.person.name,
+				persondob: $scope.data.person.dob,
+			}).then(dataService.updateCandidates);
+		}
+		Discussions.get({
+			election: $scope.data.election,
+			state: $scope.data.state,
+			constituency: $scope.data.constituency,
+			party: $scope.data.party,
+			personname: $scope.data.person.name,
+			persondob: $scope.data.person.dob,
+		}, 0).then(dataService.updateDiscussion);
+	}, function(err){
+		menuService.error($route.current.params.personname + " - " + $route.current.params.dob + " is not a valid person.");
 	});
 }
