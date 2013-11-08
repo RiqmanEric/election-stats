@@ -274,7 +274,6 @@ public class DataResource {
 			query = query + " and personDOB = '" + personDOB + "'";
 		}
 		query = query + ";";
-		System.out.println(query);
 		
 		Statement queryDB = connectDB.conn.createStatement(); 	
 		ResultSet rs = queryDB.executeQuery(query);
