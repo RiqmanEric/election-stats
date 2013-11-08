@@ -9,46 +9,9 @@ function MenuCntl($scope, menuService) {
 }
 
 function DataCntl($scope, Candidates, Discussions, dataService){
-
+	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	$scope.data = dataService.getData();
-	$scope.candidates = [
-		{
-			name: "Atal Bihari",
-			state: "Uttarprdesh",
-			constituency: "Lucknow",
-			vote: "901002",
-			votePercent: "20%",
-			result: "Won",
-			image: "atalji.jpg"
-		},
-		{
-			name: "Atal Bihari2",
-			state: "Uttarprdesh",
-			constituency: "Lucknow",
-			vote: "901002",
-			votePercent: "20%",
-			result: "Won",
-			image: "atalji.jpg"
-		},
-		{
-			name: "Atal Bihari3",
-			state: "Uttarprdesh",
-			constituency: "Lucknow",
-			vote: "901002",
-			votePercent: "20%",
-			result: "Won",
-			image: "atalji.jpg"
-		},
-		{
-			name: "Atal Bihari3",
-			state: "Uttarprdesh",
-			constituency: "Lucknow",
-			vote: "901002",
-			votePercent: "20%",
-			result: "Won",
-			image: "atalji.jpg"
-		},
-	];
+	$scope.candidates = [];
 	$scope.discussions = [
 		{
 			content: "Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.",
@@ -138,7 +101,7 @@ function DataCntl($scope, Candidates, Discussions, dataService){
 				party: $scope.data.party,
 				personname: $scope.data.person.name,
 				persondob: $scope.data.person.dob,
-			}, 0);
+			});
 			candidatePromise.then(updateCandidates);
 		}
 		var discussionPromise = Discussions.get({
@@ -148,17 +111,17 @@ function DataCntl($scope, Candidates, Discussions, dataService){
 			party: $scope.data.party,
 			personname: $scope.data.person.name,
 			persondob: $scope.data.person.dob,
-		});
+		},0);
 		discussionPromise.then(updateDiscussion);
 	}
-	var updateCandidates = function(candidates){
-		console.log("ADF");
+	var updateCandidates = function(data){
 		while ($scope.candidates.pop());
 		data.candidates.forEach(function(candidate) {
 			$scope.candidates.push(candidate);
 		});
+		console.log($scope.candidates);
 	}
-	var updateDiscussion = function(discussions){
+	var updateDiscussion = function(data){
 		while ($scope.discussions.pop());
 		data.discussions.forEach(function(discussion) {
 			$scope.discussions.push(discussion);
@@ -180,6 +143,7 @@ function HomeCntl($scope, menuService, dataService){
 }
 
 function PartyCntl($scope, $route, Party, List, menuService, dataService){
+	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	var partyPromise = Party.get($route.current.params.partyname);
 	partyPromise.then(function(p){
 		$scope.party = p;
@@ -188,16 +152,16 @@ function PartyCntl($scope, $route, Party, List, menuService, dataService){
 		filterPromiseE.then(function(elections){
 			$scope.filters.push({
 				type: "election",
-				values: elections,
-				value: elections[0]
+				values: elections.list.reverse(),
+				value: elections.list[0]
 			});
 			dataService.updateFilters($scope.filters);
 			var filterPromiseS = List.get("state", {});
 			filterPromiseS.then(function(states){
 				$scope.filters.push({
 					type: "state",
-					values: states,
-					value: states[0]
+					values: states.list,
+					value: states.list[0]
 				});
 				dataService.updateFilters($scope.filters);
 			});
@@ -212,6 +176,7 @@ function PartyCntl($scope, $route, Party, List, menuService, dataService){
 }
 
 function StateCntl($scope, $route, State, List, menuService, dataService){
+	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	var statePromise = State.get($route.current.params.statename);
 	statePromise.then(function(s){
 		$scope.state = s;
@@ -220,16 +185,16 @@ function StateCntl($scope, $route, State, List, menuService, dataService){
 		filterPromiseE.then(function(elections){
 			$scope.filters.push({
 				type: "election",
-				values: elections,
-				value: elections[0]
+				values: elections.list,
+				value: elections.list[0]
 			});
 			dataService.updateFilters($scope.filters);
 			var filterPromiseS = List.get(s.name, {});
 			filterPromiseS.then(function(constituency){
 				$scope.filters.push({
 					type: "constituency",
-					values: constituency,
-					value: constituency[0]
+					values: constituency.list,
+					value: constituency.list[0]
 				});
 				dataService.updateFilters($scope.filters);
 			});
@@ -244,6 +209,7 @@ function StateCntl($scope, $route, State, List, menuService, dataService){
 }
 
 function ConstituencyCntl($scope, $route, Constituency, List, menuService, dataService){
+	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	var constituencyPromise = Constituency.get($route.current.params.statename,$route.current.params.constituencyname);
 	constituencyPromise.then(function(c){
 		$scope.constituency = c;
@@ -252,8 +218,8 @@ function ConstituencyCntl($scope, $route, Constituency, List, menuService, dataS
 		filterPromiseE.then(function(elections){
 			$scope.filters.push({
 				type: "election",
-				values: elections,
-				value: elections[0]
+				values: elections.list,
+				value: elections.list[0]
 			});
 			dataService.updateFilters($scope.filters);
 		});
@@ -262,11 +228,12 @@ function ConstituencyCntl($scope, $route, Constituency, List, menuService, dataS
 			title: $scope.constituency.name
 		});
 		dataService.updateConstituency($scope.constituency.name);
-		dataService.updateState($scope.constituency.state.name);
+		dataService.updateState($scope.constituency.state);
 		dataService.updateGet(true);
 	});
 }
 function PersonCntl($scope, $route, Person, List, menuService, dataService){
+	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	var personPromise = Person.get($route.current.params.personname,$route.current.params.dob);
 	personPromise.then(function(p){
 		$scope.person = p;
