@@ -19,6 +19,8 @@ angular.module('esi.services', []).service('menuService', function() {
 			menu.alert.content = "";
 		},
 		error: function(msg){
+			menu.title = "";
+			menu.link = "#";
 			menu.alert.show = true;
 			menu.alert.content = msg;
 		},
@@ -122,6 +124,20 @@ angular.module('esi.services', []).service('menuService', function() {
 		});
 	};
 	return State;
+}).factory('Election', function($http) {
+	var Election = function(data) {
+		angular.extend(this, data);
+	}
+
+	Election.get = function(year) {
+		return $http.get('/election-stats/api/election/' + year).then(function(response) {
+			return new Election({
+				year: year,
+				name: response.data
+			});
+		});
+	};
+	return Election;
 }).factory('Person', function($http) {
 	var Person = function(data) {
 		angular.extend(this, data);

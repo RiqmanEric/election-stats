@@ -11,12 +11,8 @@
 </head>
 <body>
 	<div ng-controller="MenuCntl">
-		<div data-alert class="alert-box alert" ng-show=menu.alert.show>
-		  {{menu.alert.content}}
-		  <a href="#" class="close">&times;</a>
-		</div>
-		<div class="row .radius">
-			<nav class="top-bar">
+		<div class=".radius">
+			<nav id ="titleBar" class="top-bar">
 					<ul class="title-area">
 						<!-- Title Area -->
 						<li class="name">
@@ -26,7 +22,6 @@
 								</a>
 							</h1>
 						</li>
-						<li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
 					</ul>
 
 					<section class="top-bar-section">
@@ -61,15 +56,15 @@
 						</ul>
 					</section>
 			</nav>
-		</div>
-		<div class="row">
-			<hr>
+			
+			<div data-alert class="alert-box alert" ng-show=menu.alert.show>
+			  {{menu.alert.content}}
+			  <a href="#" class="close">&times;</a>
+			</div>
 		</div>
 	</div>
 	<div ng-view></div>
-	<div class="row">
-		<hr>
-	</div>
+	
 	<div ng-controller="DataCntl">
 		<div class="row" id="Candidates" ng-show="data.get">
 			<form class="custom">
@@ -103,6 +98,10 @@
 							<ul class="inline-list cand_info">
 								<li><strong>Constituency:</strong></li>
 								<li id="cand_Constituency"><a href="#/constituency/{{candidate.state}}/{{candidate.constituency}}">{{candidate.constituency}}</a></li>
+							</ul>
+							<ul class="inline-list cand_info">
+								<li><strong>Party:</strong></li>
+								<li id="cand_Party"><a href="#/party/{{candidate.party}}">{{candidate.party}}</a></li>
 							</ul>
 							<ul class="inline-list cand_info">
 								<li><strong>Vote:</strong></li>

@@ -136,6 +136,7 @@ function HomeCntl($scope, menuService, dataService, List){
 	List.get("election", {}).then(function(elections){
 		while($scope.elections.pop());
 		elections.list.forEach(function(e){ $scope.elections.push(e)});
+		$scope.elections.reverse();
 	}, function(err){
 		menuService.error("Elections list not available.");
 	});
@@ -310,5 +311,59 @@ function PersonCntl($scope, $route, Person, List, menuService, dataService, Cand
 		}, 0).then(dataService.updateDiscussion);
 	}, function(err){
 		menuService.error($route.current.params.personname + " - " + $route.current.params.dob + " is not a valid person.");
+	});
+}
+
+function ElectionCntl($scope, $route, Election, List, menuService, dataService){
+	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
+	dataService.reset();
+	Election.get($route.current.params.electionyear).then(function(e){
+		$scope.election = e;
+		$scope.filters = [];
+		menuService.update({
+			title: $scope.election.name + "th Loksabha",
+			link: "#/election/" + $scope.election.year
+		});
+		dataService.updateElection($scope.election.year);
+		dataService.updateGet(true);
+
+		List.get("state", {}).then(function(states){
+			$scope.filters.push({
+				type: "state",
+				values: states.list.sort(),
+				value: states.list[0]
+			});
+			dataService.updateFilters($scope.filters);
+			List.get($scope.filters[0].value, {}).then(function(constituencies){
+				$scope.filters.push({
+					type: "constituency",
+					values: constituencies.list.sort(),
+					value: constituencies.list[0]
+				});
+				dataService.updateFilters($scope.filters);
+				$scope.$watch("filters[0].value", function() {
+			        List.get($scope.filters[0].value, {}).then(function(constituencies){
+			        	$scope.filters.splice(1,1);
+						$scope.filters.push({
+							type: "constituency",
+							values: constituencies.list.sort(),
+							value: constituencies.list[0]
+						});
+						dataService.updateFilters($scope.filters);
+					}, function(err){
+						menuService.error("Constituency list not available.");
+					});
+			    });
+			}, function(err){
+				menuService.error("Constituency list not available.");
+			});
+			console.log($scope.filters);
+		}, function(err){
+			menuService.error("Elections list not available.");
+		});
+
+
+	}, function(err){
+		menuService.error($route.current.params.electionyear + " is not a valid year.");
 	});
 }

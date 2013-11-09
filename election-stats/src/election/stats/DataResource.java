@@ -173,6 +173,28 @@ public class DataResource {
 	}
 	
 	@GET
+	@Path("election/{electionYear}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getElection(@PathParam("electionYear") String electionyear) throws SQLException {
+		
+		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
+		String toReturn = null;
+		
+		// Querying State Info
+		String query = "select * from Election where year = " + electionyear + ";";
+		Statement queryDB = connectDB.conn.createStatement(); 	
+		ResultSet rs = queryDB.executeQuery(query);
+		if (!rs.next()) {
+			throw new WebApplicationException(404);
+		}
+		else {
+			toReturn = rs.getString(2);
+		}
+		
+		return toReturn;
+	}
+	
+	@GET
 	@Path("constituency/{stateName}/{constituencyName}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Constituency getConstituency(@PathParam("stateName") String statename,@PathParam("constituencyName") String constituencyname ) throws SQLException {

@@ -34,4 +34,7 @@
   background-color: #B6B6B4 ! important;
 }
 
+#titleBar{
+	margin-bottom: 0px;
+}
 body { text-transform: capitalize; }
