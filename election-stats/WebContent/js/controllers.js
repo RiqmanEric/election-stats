@@ -66,7 +66,7 @@ function DataCntl($scope, Candidates, Discussions, dataService){
 	}
 }
 
-function HomeCntl($scope, menuService, dataService, List){
+function HomeCntl($scope, menuService, dataService, List, $timeout){
 	menuService.update({
 		title: "Home",
 		link: "#"
@@ -76,6 +76,7 @@ function HomeCntl($scope, menuService, dataService, List){
 	$scope.states = [];
 	$scope.parties = [];
 	$scope.constituencies = [];
+	$scope.persons = [];
 
 	$scope.election = "Election";
 	$scope.state = "State";
@@ -83,7 +84,11 @@ function HomeCntl($scope, menuService, dataService, List){
 	$scope.constituency = {
 		state: "State",
 		name: "Constituency"
-	}
+	};
+	$scope.person = {
+		name:"",
+		dob:""
+	};
 
 	List.get("election", {}).then(function(elections){
 		while($scope.elections.pop());
@@ -110,14 +115,37 @@ function HomeCntl($scope, menuService, dataService, List){
 
 	$scope.$watch("constituency.state", function() {
 		if($scope.constituency.state!="State"){
-	        List.get($scope.constituency.state, {}).then(function(constituencies){
+			List.get($scope.constituency.state, {}).then(function(constituencies){
 				while($scope.constituencies.pop());
 				constituencies.list.forEach(function(e){ $scope.constituencies.push(e)});
 			}, function(err){
 				menuService.error("Constituency list not available.");
 			});
-	    }
-    });
+		}
+	});
+	$scope.search_string = "";
+
+	var tempText = '', filterTextTimeout;
+	var currentKey = 0;
+	$scope.$watch('person.name', function (val) {
+		if (filterTextTimeout) $timeout.cancel(filterTextTimeout);
+		tempText = val;
+		filterTextTimeout = $timeout(function() {
+			currentKey = currentKey +1;
+			$scope.search_string = val;
+			List.search($scope.search_string, currentKey).then(function(data){
+				if(data.key==currentKey){
+					console.log(data.list);
+					while($scope.persons.pop());
+					data.list.forEach(function(e){
+						$scope.persons.push(e);
+					});
+				}
+			}, function(data){
+				console.log(data.config.key);
+			});
+		}, 500);
+	});
 }
 
 function PartyCntl($scope, $route, Party, List, menuService, dataService){
@@ -242,7 +270,6 @@ function PersonCntl($scope, $route, Person, List, menuService, dataService, Cand
 		});
 		dataService.updateGet(true);
 		$scope.data = dataService.getData();
-		console.log($scope.data);
 		if($scope.data.get){
 			Candidates.get({
 				election: $scope.data.election,
@@ -294,8 +321,8 @@ function ElectionCntl($scope, $route, Election, List, menuService, dataService){
 				});
 				dataService.updateFilters($scope.filters);
 				$scope.$watch("filters[0].value", function() {
-			        List.get($scope.filters[0].value, {}).then(function(constituencies){
-			        	$scope.filters.splice(1,1);
+					List.get($scope.filters[0].value, {}).then(function(constituencies){
+						$scope.filters.splice(1,1);
 						$scope.filters.push({
 							type: "constituency",
 							values: constituencies.list.sort(),
@@ -305,11 +332,10 @@ function ElectionCntl($scope, $route, Election, List, menuService, dataService){
 					}, function(err){
 						menuService.error("Constituency list not available.");
 					});
-			    });
+				});
 			}, function(err){
 				menuService.error("Constituency list not available.");
 			});
-			console.log($scope.filters);
 		}, function(err){
 			menuService.error("Elections list not available.");
 		});
@@ -320,7 +346,7 @@ function ElectionCntl($scope, $route, Election, List, menuService, dataService){
 	});
 }
 
-function StatsCntl($scope, menuService, List, Stats){
+function StatsCntl($scope, menuService, List, Stats, $timeout){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	// dataService.reset();
 	menuService.update({
@@ -346,6 +372,7 @@ function StatsCntl($scope, menuService, List, Stats){
 	];
 	$scope.attribs = ["winners", "femaleCandidates", "votePercentage"];
 	$scope.attribute = "winners";
+	$scope.data = [];
 	List.get("election", {}).then(function(elections){
 		while($scope.filters[0].values.pop());
 		elections.list.reverse();
@@ -370,9 +397,11 @@ function StatsCntl($scope, menuService, List, Stats){
 		menuService.error("Parties list not available.");
 	});
 	$scope.checkbox = function(choice, f){
-		choice.isChecked = !choice.isChecked;
-		if(choice.isChecked) f.count = f.count+1;
-		else f.count = f.count-1;
+		$timeout(function(){
+			choice.isChecked = !choice.isChecked;
+			if(choice.isChecked) f.count = f.count+1;
+			else f.count = f.count-1;
+		},0);
 	}
 	$scope.radio = function(attribute){
 		$scope.attribute = $scope.attribs[attribute];
@@ -380,7 +409,6 @@ function StatsCntl($scope, menuService, List, Stats){
 		var state = [];
 		var party = [];
 		$scope.filters[0].values.forEach(function(v){
-			console.log(v);
 			if(v.isChecked) election.push(v.value);
 		});
 		$scope.filters[1].values.forEach(function(v){
@@ -397,7 +425,15 @@ function StatsCntl($scope, menuService, List, Stats){
 			state: state,
 			party: party
 		}).then(function(data){
-			console.log(data);
+			while($scope.data.pop());
+			data.list.forEach(function(e){
+				$scope.data.push({
+					year: Number(e.year),
+					state: e.state,
+					party: e.party,
+					count: Number(e.count)
+				});
+			});
 		});
 	}
 
