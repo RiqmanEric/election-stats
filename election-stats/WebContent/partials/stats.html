@@ -1,0 +1,40 @@
+	<div class="row">
+		<div class="large-3 small-3 columns">
+			<div class="section-container accordion" data-section="accordion">
+				<section ng-repeat="f in filters" callfoundation>
+					<p class="title" data-section-title><a href="">{{f.title}}[{{f.count}}]</a></p>
+					<div class="content" data-section-content>
+						<form class="custom">
+							<div class="row sec_contain">
+								<div class="large-12 columns">
+									<input type="text" ng-model="f.search.value"/>
+									<div class="row" ng-repeat="choice in f.values | filter: f.search">
+										<div class="large-10 columns">
+											<label>{{choice.value | truncate :25}}</label>
+										</div> 
+										<div class="large-2 columns">
+											<input type="checkbox" id="checkbox1" style="display: none;"><span class="custom checkbox" ng-click="checkbox(choice, f)"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</section>
+			</div>
+
+		</div>
+		<div class="large-7 small-7 columns panel">
+			<p>alok</p>
+		</div>
+		<div class=" large-2 small-2 columns ">
+			<div class="row ">
+			<div class=" large-11 small-11 columns push-1 panel callout">
+				<form class="custom">
+					<div ng-repeat="a in attribs"> <label><input name="att" type="radio" style="display:none;"  >
+					<span class="custom radio" ng-click="radio($index)"></span> {{a}}</label></div>
+	 			</form>
+	 		</div>
+	 		</div>
+		</div>
+	</div>

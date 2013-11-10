@@ -193,4 +193,18 @@ angular.module('esi.services', []).service('menuService', function() {
 		});
 	};
 	return List;
+}).factory('Stats', function($http) {
+	var Stats = function(data) {
+		angular.extend(this, data);
+	}
+
+	Stats.get = function(type, para) {
+		var p = $.param(para);
+		p = p.split("%5B").join("");
+		p = p.split("%5D").join("");
+		return $http.get('/election-stats/api/stats/' + type+"?"+p).then(function(response) {
+			return new Stats({list: response.data});
+		});
+	};
+	return Stats;
 });

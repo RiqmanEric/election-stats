@@ -1,5 +1,4 @@
 INSERT INTO constituency VALUES ('andaman & nicobar islands', 'andaman & nicobar islands', NULL, NULL, NULL);
-INSERT INTO constituency VALUES ('chandigarh', 'andaman & nicobar islands', NULL, NULL, NULL);
 INSERT INTO constituency VALUES ('adilabad', 'andhra pradesh', NULL, NULL, NULL);
 INSERT INTO constituency VALUES ('amalapuram', 'andhra pradesh', NULL, NULL, NULL);
 INSERT INTO constituency VALUES ('anakapalli', 'andhra pradesh', NULL, NULL, NULL);

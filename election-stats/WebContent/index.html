@@ -10,9 +10,10 @@
 	<link rel="stylesheet" href="css/app.css"/>
 </head>
 <body>
+<div id="container">
 	<div ng-controller="MenuCntl">
 		<div class=".radius">
-			<nav id ="titleBar" class="top-bar">
+			<nav  class="titleBar top-bar">
 					<ul class="title-area">
 						<!-- Title Area -->
 						<li class="name">
@@ -56,7 +57,6 @@
 						</ul>
 					</section>
 			</nav>
-			
 			<div data-alert class="alert-box alert" ng-show=menu.alert.show>
 			  {{menu.alert.content}}
 			  <a href="#" class="close">&times;</a>
@@ -64,23 +64,19 @@
 		</div>
 	</div>
 	<div ng-view></div>
-	
 	<div ng-controller="DataCntl">
 		<div class="row" id="Candidates" ng-show="data.get">
-			<form class="custom">
-				<div class="large-3 columns" ng-repeat="filter in data.filters" callfoundation>
-					<div class="large-12 small-12 columns">
-							<label >{{filter.type}}</label>
-							<select ng-model="filter.value">
-								<option ng-repeat="value in filter.values">{{value}}</option>
-							</select>
-					</div>
+			<form class="custom" ng-show="data.filters.length!=0">
+				<div class="large-3 small-3 columns" ng-repeat="filter in data.filters" callfoundation>
+					<label >{{filter.type}}</label>
+					<select ng-model="filter.value">
+						<option ng-repeat="value in filter.values">{{value}}</option>
+					</select>
 				</div>
-				<div class="large-2 small-2 columns" id="Filter_Submit" ng-show="data.filters.length!=0">
-		          <a href="" class="button postfix" ng-click="filter()">Filter</a>
-		        </div>
+				<div class="large-2 small-2 columns" id="Filter_Submit" >
+		      <a class="button postfix" ng-click="filter()">Filter</a>
+		    </div>
 			</form>
-			<hr/>
 			<div class="row">
 			<div class="small-12 large-12 columns" >
 				<div class="small-6 large-6	columns" id="candidate_container">
@@ -98,6 +94,10 @@
 							<ul class="inline-list cand_info">
 								<li><strong>Constituency:</strong></li>
 								<li id="cand_Constituency"><a href="#/constituency/{{candidate.state}}/{{candidate.constituency}}">{{candidate.constituency}}</a></li>
+							</ul>
+							<ul class="inline-list cand_info">
+								<li><strong>Year:</strong></li>
+								<li id="cand_Party"><a href="#/election/{{candidate.year}}">{{candidate.year}}</a></li>
 							</ul>
 							<ul class="inline-list cand_info">
 								<li><strong>Party:</strong></li>
@@ -123,29 +123,27 @@
 					<p>Other Info</p>
 				</div>
 			</div>
-		</div>
-		<div class="row">
-			<hr>
-		</div>
-		</div>
-		
-
-
-		<div class="row">
-			<div class="small-12 large-12 columns" id="Discussion">
-				<div class="row">
-					<span class="panel large-12 columns callout"><h6>Discussion</h6></span>
-				</div>
-				<div class="small-12 large-12 columns" ng-repeat="discussion in discussions" ng-include="'partials/discussion.html'">
-				</div>
 			</div>
 		</div>
 
-	<div class="row">
+		<div class="row">
+				<div class="titleBar panel small-12 large-12 columns callout">
+					<div class="large-2 small-2 columns"><h6>Discussion</h6></div>
+					<div class="large-2 small-2 columns" >
+			      <a class="button small">Add Discussion</a>
+			    </div>
+				</div>
+				<div class="small-12 large-12 columns" ng-repeat="discussion in discussions" ng-include="'partials/discussion.html'">
+				</div>
+		</div>
+	</div>
+
+	<footer>
 		<div class="small-12 large-12 columns header">
 			<p>Footer</p>
 		</div>
-	</div>
+	</footer>
+</div>
 	<!-- Foundation JS dependencies -->
 	<script src="lib/foundation/js/vendor/jquery.js"></script>
 	<script src="lib/foundation/js/vendor/custom.modernizr.js"></script>

@@ -11,6 +11,7 @@ angular.module('esi', ['esi.filters', 'esi.services', 'esi.directives', 'esi.con
     .when('/person/:personname/:dob', {templateUrl: 'partials/person.html', controller: 'PersonCntl'})
     .when('/constituency/:statename/:constituencyname', {templateUrl: 'partials/constituency.html', controller: 'ConstituencyCntl'})
     .when('/election/:electionyear', {templateUrl: 'partials/election.html', controller: 'ElectionCntl'})
+    .when('/stats', {templateUrl: 'partials/stats.html', controller: 'StatsCntl'})
     .otherwise({redirectTo: '/'});
 
     // $locationProvider.html5Mode(true);

@@ -13,54 +13,6 @@ function DataCntl($scope, Candidates, Discussions, dataService){
 	$scope.data = dataService.getData();
 	$scope.candidates = dataService.getCandidates();
 	$scope.discussions = dataService.getDiscussions();
-	dataService.updateDiscussions({
-		discussions: [
-		{
-			content: "Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.",
-			user: "Someone",
-			comments: [
-				{
-					content: "com1 Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.",
-					user: "Someone",
-					comments: 0,
-				},
-				{
-					content: "com2 Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.",
-					user: "Someone",
-					comments: 0,
-				}
-			]
-		},
-		{
-			content: "dis2 Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.",
-			user: "Someone",
-			comments: [
-				{
-					content: "com3 Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.",
-					user: "Someone",
-					comments: [
-						{
-							content: "com31 sBacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.",
-							user: "Someone",
-							comments: [
-								{
-									content: "com3 Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.",
-									user: "Someone",
-									comments: [
-										{
-											content: "com31 sBacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong.",
-											user: "Someone",
-											comments: 0,
-										}
-									]
-								}
-							]
-						}
-					]
-				}
-			]
-		}
-	]});
 	if($scope.data.get){
 		Candidates.get({
 			election: $scope.data.election,
@@ -366,4 +318,87 @@ function ElectionCntl($scope, $route, Election, List, menuService, dataService){
 	}, function(err){
 		menuService.error($route.current.params.electionyear + " is not a valid year.");
 	});
+}
+
+function StatsCntl($scope, menuService, List, Stats){
+	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
+	// dataService.reset();
+	menuService.update({
+		title: "Statistics",
+		link: "#/stats/"
+	});
+	$scope.filters = [
+		{
+			title: "Elections",
+			values:[],
+			count: 0,
+		},
+		{
+			title: "States",
+			values:[],
+			count: 0,
+		},
+		{
+			title: "Parties",
+			values:[],
+			count:0,
+		}
+	];
+	$scope.attribs = ["winners", "femaleCandidates", "votePercentage"];
+	$scope.attribute = "winners";
+	List.get("election", {}).then(function(elections){
+		while($scope.filters[0].values.pop());
+		elections.list.reverse();
+		elections.list.forEach(function(e){ $scope.filters[0].values.push({value: e, isChecked: false})});
+	}, function(err){
+		menuService.error("Elections list not available.");
+	});
+
+	List.get("state", {}).then(function(states){
+		while($scope.filters[1].values.pop());
+		states.list.sort();
+		states.list.forEach(function(e){ $scope.filters[1].values.push({value: e, isChecked: false})});
+	}, function(err){
+		menuService.error("States list not available.");
+	});
+
+	List.get("party", {}).then(function(parties){
+		while($scope.filters[2].values.pop());
+		parties.list.sort();
+		parties.list.forEach(function(e){$scope.filters[2].values.push({value: e, isChecked: false})});
+	}, function(err){
+		menuService.error("Parties list not available.");
+	});
+	$scope.checkbox = function(choice, f){
+		choice.isChecked = !choice.isChecked;
+		if(choice.isChecked) f.count = f.count+1;
+		else f.count = f.count-1;
+	}
+	$scope.radio = function(attribute){
+		$scope.attribute = $scope.attribs[attribute];
+		var election = [];
+		var state = [];
+		var party = [];
+		$scope.filters[0].values.forEach(function(v){
+			console.log(v);
+			if(v.isChecked) election.push(v.value);
+		});
+		$scope.filters[1].values.forEach(function(v){
+			if(v.isChecked) state.push(v.value);
+		});
+		$scope.filters[2].values.forEach(function(v){
+			if(v.isChecked) party.push(v.value);
+		});
+		election = (election.length>0? election:[""]);
+		state = (state.length>0? state:[""]);
+		party = (party.length>0? party:[""]);
+		Stats.get($scope.attribute,{
+			year: election,
+			state: state,
+			party: party
+		}).then(function(data){
+			console.log(data);
+		});
+	}
+
 }
