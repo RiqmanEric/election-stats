@@ -173,6 +173,27 @@ public class DataResource {
 	}
 	
 	@GET
+	@Path("search/{personName}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<Person> getPerson(@PathParam("personName") String personname) throws SQLException {
+		
+		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
+		ArrayList<Person> toReturn = new ArrayList<Person>();
+		personname = personname.toLowerCase();
+		
+		// Querying State Info
+		String query = "select name, dob from person where name like '%" + personname + "%';";
+		Statement queryDB = connectDB.conn.createStatement(); 	
+		ResultSet rs = queryDB.executeQuery(query);
+		
+		for (int i=0;i<10 && rs.next();i++) {
+			toReturn.add(new Person(rs.getString(1), rs.getString(2), "0.jpg", "N/A", "N/A", null));
+		}
+		
+		return toReturn;
+	}
+	
+	@GET
 	@Path("election/{electionYear}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getElection(@PathParam("electionYear") String electionyear) throws SQLException {

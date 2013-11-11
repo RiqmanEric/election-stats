@@ -37,6 +37,7 @@ public class ConnectDB {
 	}
 	
 	public void closeConnection() throws SQLException {
+		System.out.println("Connection closed successfullly");
 		conn.close();
 	}
 }
