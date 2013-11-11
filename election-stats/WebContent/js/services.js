@@ -192,6 +192,11 @@ angular.module('esi.services', []).service('menuService', function() {
 			return new List({list: response.data});
 		});
 	};
+	List.search = function(searchkey, currentKey) {
+		return $http.get('/election-stats/api/search/' + searchkey, { key:currentKey}).then(function(response) {
+			return new List({list: response.data, key: response.config.key});
+		});
+	};
 	return List;
 }).factory('Stats', function($http) {
 	var Stats = function(data) {

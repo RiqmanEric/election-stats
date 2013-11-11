@@ -31,7 +31,7 @@
   text-align: center;
 }
 .field_selector{
-  background-color: #B6B6B4 ! important;
+  background-color: #555 ! important;
 }
 
 .titleBar{
@@ -66,6 +66,11 @@ footer {
   color: white;
 }
 .sec_contain{
-  max-height: 200px;
+  max-height: 300px;
   overflow-y: scroll;
+}
+#name_list{
+  position: absolute;
+  z-index: 100;
+  background-color: #eee;
 }
