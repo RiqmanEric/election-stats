@@ -19,12 +19,25 @@
 			<div class="small-12 large-12 columns Persons">
 				<table class="small-12 large-12 columns">
 					<tr>
-						<td ><h6 class="fn" >Chairperson </h6></td><td class="divider"></td><td id = "ChairPerson"> <a href="#/person/{{party.chairPerson.name}}/{{party.chairPerson.dob}}">{{party.chairPerson.name}}</a></td>
+						<td ><h6 class="fn" >Chairperson </h6></td><td class="divider"></td>
+						<td></td>
+						<td id = "ChairPerson"> <a href="#/person/{{party.chairPerson.name}}/{{party.chairPerson.dob}}">{{party.chairPerson.name}}</a></td>
 					</tr>
 					<tr>
 						<td ><h6 class="fn">Notable Persons </h6></td><td class="divider"></td>
 						<td>
+						</td>
+						<td>
 							<a ng-repeat="person in party.notablePerson" href="#/person/{{person.name}}/{{person.dob}}">{{person.name}}, </a>
+						</td>
+					</tr>
+					<tr>
+						<td ><h6 class="fn">Number of Followers </h6></td><td class="divider"></td>
+						<td>
+							{{party.followers}}
+						</td>
+						<td>
+						<a class="small button">Follow </a>
 						</td>
 					</tr>
 				</table>

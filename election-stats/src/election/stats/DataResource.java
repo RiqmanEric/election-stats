@@ -33,7 +33,7 @@ public class DataResource {
 			throws SQLException {
 
 		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
-		Party toReturn = new Party(partyname, null, null, null, null, null);
+		Party toReturn = new Party(partyname, null, null, null, null, null, 0);
 
 		// Querying Party Info
 		String query = "select * from party where name = '" + partyname + "';";
@@ -49,6 +49,8 @@ public class DataResource {
 			else
 				toReturn.setIdeology(ideology);
 
+			int followers = rs.getInt(4);
+			toReturn.setFollowers(followers);
 			// Chairperson of the party
 			String chairpersonname = rs.getString(8);
 			String chairpersondob = rs.getString(9);
@@ -806,7 +808,7 @@ public class DataResource {
 	public void addComment(
 			@FormParam("id") String parentid,
 			@FormParam("content") String content,
-			@FormParam("username") String username			
+			@FormParam("emailid") String emailid			
 			) throws SQLException {
 
 		
@@ -814,16 +816,8 @@ public class DataResource {
 
 		
 		// get email id of the user
-		String query = "select emailID from users where name = '" + username + "';";
+		String query;
 		Statement queryDB = connectDB.conn.createStatement(); 	
-		ResultSet rs = queryDB.executeQuery(query);
-		String email = "";
-		if (!rs.next()) {	
-			throw new WebApplicationException(404);
-		}
-		else{
-			email = rs.getString(1);
-		}
 		
         PreparedStatement pstmt;
         
@@ -831,7 +825,7 @@ public class DataResource {
         query = "Insert into Discussion (Content, EmailID) VALUES (?,?)";
         pstmt = connectDB.conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         pstmt.setString(1, content);
-        pstmt.setString(1, email);
+        pstmt.setString(1, emailid);
         pstmt.executeUpdate();
         ResultSet keys = pstmt.getGeneratedKeys();
         int key = 0;
@@ -840,7 +834,7 @@ public class DataResource {
         }
         
         query = "Insert into Comment values ("  + Integer.toString(key) + ", " + parentid + ");";
-        rs = queryDB.executeQuery(query);
+        queryDB.executeUpdate(query);
 	}
 	
 	@POST
@@ -855,29 +849,20 @@ public class DataResource {
 			@FormParam("personname") String personName,
 			@FormParam("persondob") String personDOB,
 			@FormParam("content") String content,
-			@FormParam("username") String username) throws SQLException {
+			@FormParam("emailid") String emailid) throws SQLException {
 		
 		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
 
 		// get email id of the user
-		String query = "select emailID from users where name = '" + username + "';";
+		String query;
 		Statement queryDB = connectDB.conn.createStatement(); 	
-		ResultSet rs = queryDB.executeQuery(query);
-		String email = "";
-		if (!rs.next()) {	
-			throw new WebApplicationException(404);
-		}
-		else{
-			email = rs.getString(1);
-		}
-		
-		
+				
 		//get the id of the inserted discussion
 		PreparedStatement pstmt;
         query = "Insert into Discussion (Content, EmailID) VALUES (?,?)";
         pstmt = connectDB.conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         pstmt.setString(1, content);
-        pstmt.setString(1, email);
+        pstmt.setString(1, emailid);
         pstmt.executeUpdate();
         ResultSet keys = pstmt.getGeneratedKeys();
         int key = 0;
@@ -923,6 +908,7 @@ public class DataResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public ArrayList<Discussion> getComments(@PathParam("id") String parentid) throws SQLException {
 
+
 		
 		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
 		ArrayList<Discussion> toReturn = new ArrayList<Discussion>();
@@ -934,7 +920,7 @@ public class DataResource {
 		while (rs.next()) {
 			int id = rs.getInt(1);
 			String content = rs.getString(2);
-			String email = rs.getString(2);
+			String email = rs.getString(3);
 			toReturn.add(new Discussion(id, content, email));			
 		}
 		
@@ -950,5 +936,57 @@ public class DataResource {
 		}
 		
 		return toReturn;
+	}
+	
+	@POST
+	@Path("user")
+	@Produces(MediaType.APPLICATION_JSON)
+	public void addUser(@FormParam("username") String username, 
+
+
+			@FormParam("emailid") String emailid) throws SQLException {
+
+		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
+				
+		// Querying for comments on a discussion
+		String query = "select count(*) from Users where emailid = '" + emailid + "';";
+		Statement queryDB = connectDB.conn.createStatement(); 	
+		ResultSet rs = queryDB.executeQuery(query);
+		
+		int count = 0;
+		if (!rs.next()) {
+		}
+		else{
+			count = rs.getInt(1);						
+		}
+		if(count == 0){
+			query = "Insert into Users Values('" + emailid + "','"+ username + "');";
+			queryDB.executeUpdate(query);
+		}
+	}
+	
+	@POST
+	@Path("follow")
+	@Produces(MediaType.APPLICATION_JSON)
+	public void followParty(@FormParam("emailid") String emailid,
+			@FormParam("partyname") String partyname) throws SQLException {
+
+		ConnectDB connectDB = (ConnectDB) S.getAttribute("connectDB");
+				
+		// Querying for comments on a discussion
+		String query = "select count(*) from Follows where emailid = '" + emailid + "' and partyname = '" + partyname +"';";
+		Statement queryDB = connectDB.conn.createStatement(); 	
+		ResultSet rs = queryDB.executeQuery(query);
+		
+		int count = 0;
+		if (!rs.next()) {
+		}
+		else{
+			count = rs.getInt(1);						
+		}
+		if(count == 0){
+			query = "Insert into Follows Values('" + emailid + "','"+ partyname + "');";
+			queryDB.executeUpdate(query);
+		}
 	}
 }
