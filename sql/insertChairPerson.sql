@@ -1,0 +1,14 @@
+UPDATE Party SET ChairPersonName='mayawati', ChairPersonDOB='1956-01-15' where name='bahujan samaj party';
+UPDATE Party SET ChairPersonName='rajnath singh', ChairPersonDOB='1951-07-10' where name='bharatiya janata party';
+UPDATE Party SET ChairPersonName='suravaram sudhakar reddy', ChairPersonDOB='1942-03-25' where name='communist party of india';
+UPDATE Party SET ChairPersonName='sonia gandhi', ChairPersonDOB='1946-12-09' where name='indian national congress';
+UPDATE Party SET ChairPersonName='pawar sharadchandra govindrao', ChairPersonDOB='1940-12-12' where name='nationalist congress party';
+UPDATE Party SET ChairPersonName='mamata banerjee', ChairPersonDOB='1955-02-03' where name='all india trinamool congress';
+UPDATE Party SET ChairPersonName='naveen patnaik', ChairPersonDOB='1946-10-16' where name='biju janata dal';
+UPDATE Party SET ChairPersonName='omar abdullah', ChairPersonDOB='1970-03-10' where name='jammu & kashmir national conference';
+UPDATE Party SET ChairPersonName='sharad yadav', ChairPersonDOB='1947-07-01' where name='janata dal (united)';
+UPDATE Party SET ChairPersonName='shibu soren', ChairPersonDOB='1944-01-11' where name='jharkhand mukti morcha';
+UPDATE Party SET ChairPersonName='h. d. devegowda', ChairPersonDOB='1933-05-18' where name='janata dal (secular)';
+UPDATE Party SET ChairPersonName='ram vilas paswan', ChairPersonDOB='1948-02-24' where name='lok jan shakti party';
+UPDATE Party SET ChairPersonName='lalu prasad', ChairPersonDOB='1948-06-11' where name='rashtriya janata dal';
+UPDATE Party SET ChairPersonName='mulayam singh yadav', ChairPersonDOB='1939-11-22' where name='samajwadi party';

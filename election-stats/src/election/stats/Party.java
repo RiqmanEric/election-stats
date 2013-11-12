@@ -12,9 +12,11 @@ public class Party {
 	ArrayList<Person> notablePerson;
 	String image;
 	String history;
+	int followers;
 
-	public Party(String name, String ideology, Person chairPerson, ArrayList<Person> notablePerson, String image,
-			String histroy) {
+	public Party(String name, String ideology, Person chairPerson,
+			ArrayList<Person> notablePerson, String image, String history,
+			int followers) {
 		super();
 		this.name = name;
 		this.ideology = ideology;
@@ -22,6 +24,15 @@ public class Party {
 		this.notablePerson = notablePerson;
 		this.image = image;
 		this.history = history;
+		this.followers = followers;
+	}
+
+	public int getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(int followers) {
+		this.followers = followers;
 	}
 
 	public String getName() {
