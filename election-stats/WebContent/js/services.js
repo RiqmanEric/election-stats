@@ -2,13 +2,18 @@
 
 /* Services */
 
-angular.module('esi.services', []).service('menuService', function() {
+angular.module('esi.services', ['ngCookies']).service('menuService', function() {
 	var menu = {
 		title: "",
 		link: "#",
 		alert: {
 			show: false,
 			content: ""
+		},
+		checkLogin: false,
+		user: {
+			username:"",
+			email:""
 		}
 	};
 	return {
@@ -26,6 +31,18 @@ angular.module('esi.services', []).service('menuService', function() {
 		},
 		getMenu: function() {
 			return menu;
+		},
+		setUser: function(u){
+			menu.user.username = u.username;
+			menu.user.email = u.email;
+			menu.checkLogin = true;
+		},
+		unSetUser: function(){
+			menu.user = {
+				username: "",
+				email: ""
+			};
+			menu.checkLogin = false;
 		}
 	}
 }).service('dataService', function() {
@@ -225,13 +242,13 @@ angular.module('esi.services', []).service('menuService', function() {
 	var List = function(data) {
 		angular.extend(this, data);
 	}
-	var promise = $q.defer().promise;
 	var cache = $cacheFactory('election-stats');
 	List.get = function(type, para) {
 		if(cache.get(type)){
-			promise.then(function() {
-				return new List(cache.get(type));
-			});
+			var deferred = $q.defer();
+			var promise = deferred.promise;
+			deferred.resolve(cache.get(type));
+			return promise;
 		}
 		return $http.get('/election-stats/api/list/' + type, {params: para}).then(function(response) {
 			cache.put(type, {list: response.data});
@@ -258,4 +275,62 @@ angular.module('esi.services', []).service('menuService', function() {
 		});
 	};
 	return Stats;
+}).service('Login', function ($http, $rootScope, $q, $cookieStore) {
+	var clientId = '414328947017.apps.googleusercontent.com',
+		scopes = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+		domain = '',
+		deferred = $q.defer();
+	this.login = function () {
+		if($cookieStore.get("email") && $cookieStore.get("username")){
+			var deferred1 = $q.defer();
+			deferred1.resolve({
+				email: $cookieStore.get("email"),
+				username: $cookieStore.get("username")
+			});
+			return deferred1.promise;
+		}
+		gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, this.handleAuthResult);
+		return deferred.promise;
+	};
+
+	this.checkAuth = function() {
+		var deferred1 = $q.defer();
+		if($cookieStore.get("email") && $cookieStore.get("username")){
+			deferred1.resolve({
+				email: $cookieStore.get("email"),
+				username: $cookieStore.get("username")
+			});
+			return deferred1.promise;
+		}else{
+			deferred1.reject('error');
+			return deferred1.promise;
+		}
+	};
+
+	this.handleAuthResult = function(authResult) {
+		if (authResult && !authResult.error) {
+			var data = {};
+			gapi.client.load('oauth2', 'v2', function () {
+				var request = gapi.client.oauth2.userinfo.get();
+				request.execute(function (resp) {
+					$rootScope.$apply(function () {
+						data.email = resp.email;
+						data.username = resp.name;
+					});
+					$cookieStore.put("email", resp.email);
+					$cookieStore.put("username", resp.name);
+					console.log(data);
+				});
+			});
+			deferred.resolve(data);
+		} else {
+			deferred.reject('error');
+		}
+	};
+
+	this.handleAuthClick = function (event) {
+		gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, this.handleAuthResult );
+		return false;
+	};
+
 });

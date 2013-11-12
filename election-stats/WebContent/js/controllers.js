@@ -4,8 +4,24 @@
 
 angular.module('esi.controllers', ["highcharts-ng"]);
 
-function MenuCntl($scope, menuService) {
+function MenuCntl($scope, menuService, Login) {
 	$scope.menu = menuService.getMenu();
+	$scope.login = function(){
+		Login.login().then(function(data){
+			menuService.setUser(data);
+			console.log(data);
+		},function(data){
+			menuService.unSetUser();
+			console.log(data);
+		});
+	}
+	Login.checkAuth().then(function(data){
+		menuService.setUser(data);
+		console.log(data);
+	},function(data){
+		menuService.unSetUser();
+		console.log(data);
+	});
 }
 
 function DataCntl($scope, Candidates, Discussions, dataService){
@@ -65,6 +81,7 @@ function DataCntl($scope, Candidates, Discussions, dataService){
 	}
 
 	$scope.chartConfig = dataService.getChartConfig();
+
 }
 
 function HomeCntl($scope, menuService, dataService, List, $timeout){
