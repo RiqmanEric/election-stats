@@ -43,6 +43,34 @@ angular.module('esi.services', []).service('menuService', function() {
 	};
 	var candidates = [];
 	var discussions = [];
+	var chartConfig = {
+		chart: {
+			plotBackgroundColor: null,
+			plotBorderWidth: null,
+			plotShadow: false
+		},
+		title: {
+			text: ''
+		},
+		tooltip: {
+			pointFormat: '{series.name}: <b>{point.percentage:.1f}</b>'
+		},
+		series: [{
+			type: 'pie',
+			name: '',
+			data: [],
+			allowPointSelect: true,
+			cursor: 'pointer',
+			dataLabels: {
+				enabled: true,
+				color: '#000000',
+				connectorColor: '#000000',
+				format: '{point.name}: {point.percentage:.1f}%'
+			}
+		}]
+	}
+	var chartFunc = function(chartConfig, candidates, data){
+	}
 	return {
 		updateFilters: function(filters) {
 			while (data.filters.pop());
@@ -71,23 +99,30 @@ angular.module('esi.services', []).service('menuService', function() {
 		getData: function() {
 			return data;
 		},
+		getDiscussions: function() {
+			return discussions;
+		},
+		getCandidates: function(){
+			return candidates;
+		},
+		getChartConfig: function(){
+			return chartConfig;
+		},
+		updateChartFunction: function(func){
+			chartFunc = func;
+		},
 		updateCandidates: function(cand) {
 			while (candidates.pop());
 			cand.candidates.forEach(function(c) {
 				candidates.push(c);
 			});
+			chartFunc(chartConfig,cand.candidates, data);
 		},
 		updateDiscussions: function(disc) {
 			while (discussions.pop());
 			disc.discussions.forEach(function(d) {
 				discussions.push(d);
 			});
-		},
-		getDiscussions: function() {
-			return discussions;
-		},
-		getCandidates: function(){
-			return candidates;
 		},
 		reset: function(){
 			data.get = false;
@@ -98,8 +133,12 @@ angular.module('esi.services', []).service('menuService', function() {
 			data.constituency = "";
 			data.person.name = "";
 			data.person.dob = "";
+			chartConfig.title.text = "";
+			chartConfig.series[0].name = "";
+			chartFunc = function(chartConfig, candidates, data){}
 			while(candidates.pop());
 			while(discussions.pop());
+			while(chartConfig.series[0].data.pop());
 		}
 	};
 }).factory('Party', function($http) {
@@ -182,13 +221,20 @@ angular.module('esi.services', []).service('menuService', function() {
 		});
 	};
 	return Discussions;
-}).factory('List', function($http) {
+}).factory('List', function($http, $cacheFactory, $q) {
 	var List = function(data) {
 		angular.extend(this, data);
 	}
-
+	var promise = $q.defer().promise;
+	var cache = $cacheFactory('election-stats');
 	List.get = function(type, para) {
+		if(cache.get(type)){
+			promise.then(function() {
+				return new List(cache.get(type));
+			});
+		}
 		return $http.get('/election-stats/api/list/' + type, {params: para}).then(function(response) {
+			cache.put(type, {list: response.data});
 			return new List({list: response.data});
 		});
 	};

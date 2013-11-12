@@ -8,9 +8,10 @@ angular.module('esi.directives', [])
         return {
             restrict: 'A',
             link: function postLink(scope, element, attrs) {
-                if (attrs.ngRepeat && scope.$last) {
+                if ((attrs.ngRepeat && scope.$last) || attrs.config) {
                     $timeout(function() {
                         $(document).foundation();
+                        $(window).resize();
                     });
                 }
             }
