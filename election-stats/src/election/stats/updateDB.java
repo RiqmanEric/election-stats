@@ -35,6 +35,23 @@ public class updateDB {
 					+ "');";
 			queryDB.executeUpdate(query);
 		}
+		
+		// Inserting party number of members in parliament
+		ArrayList<String> partylist = new ArrayList<String>();
+		ArrayList<Integer> memberscount = new ArrayList<Integer>();
+		query = "select partyname, count(*) from candidate group by partyname;";
+		rs = queryDB.executeQuery(query);
+		while (rs.next()) {
+			partylist.add(rs.getString(1).replaceAll("'","''"));
+			memberscount.add(rs.getInt(2));
+		}
+		for (int i=0;i<partylist.size();i++) {
+			query = "UPDATE party " + 
+					"SET numberofmembersinparliament = " + String.valueOf(memberscount.get(i)) + 
+					" WHERE name = '" + partylist.get(i) + "';";
+			queryDB.executeUpdate(query);
+			System.out.println(query);
+		}
 		connectDB.closeConnection();
 
 	}
