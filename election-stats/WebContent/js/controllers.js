@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-angular.module('esi.controllers', []);
+angular.module('esi.controllers', ["highcharts-ng"]);
 
 function MenuCntl($scope, menuService) {
 	$scope.menu = menuService.getMenu();
@@ -31,7 +31,6 @@ function DataCntl($scope, Candidates, Discussions, dataService){
 		personname: $scope.data.person.name,
 		persondob: $scope.data.person.dob,
 	}, 0).then(dataService.updateDiscussion);
-
 	$scope.filter = function(){
 		$scope.data.filters.forEach(function(filter){
 			if(filter.type == "election")
@@ -64,6 +63,8 @@ function DataCntl($scope, Candidates, Discussions, dataService){
 			persondob: $scope.data.person.dob,
 		},0).then(dataService.updateDiscussion);
 	}
+
+	$scope.chartConfig = dataService.getChartConfig();
 }
 
 function HomeCntl($scope, menuService, dataService, List, $timeout){
@@ -109,6 +110,7 @@ function HomeCntl($scope, menuService, dataService, List, $timeout){
 	List.get("party", {}).then(function(parties){
 		while($scope.parties.pop());
 		parties.list.forEach(function(e){ $scope.parties.push(e)});
+		$scope.parties.sort();
 	}, function(err){
 		menuService.error("Parties list not available.");
 	});
@@ -118,6 +120,7 @@ function HomeCntl($scope, menuService, dataService, List, $timeout){
 			List.get($scope.constituency.state, {}).then(function(constituencies){
 				while($scope.constituencies.pop());
 				constituencies.list.forEach(function(e){ $scope.constituencies.push(e)});
+				$scope.constituencies.sort();
 			}, function(err){
 				menuService.error("Constituency list not available.");
 			});
@@ -133,6 +136,7 @@ function HomeCntl($scope, menuService, dataService, List, $timeout){
 		filterTextTimeout = $timeout(function() {
 			currentKey = currentKey +1;
 			$scope.search_string = val;
+			if($scope.search_string=="") return;
 			List.search($scope.search_string, currentKey).then(function(data){
 				if(data.key==currentKey){
 					console.log(data.list);
@@ -160,6 +164,24 @@ function PartyCntl($scope, $route, Party, List, menuService, dataService){
 		});
 		dataService.updateParty($scope.party.name);
 		dataService.updateGet(true);
+		dataService.updateChartFunction(function(chartConfig, candidates, data){
+			chartConfig.title.text = data.party + "Win/Lose <br>" + data.state + ", " + data.election;
+			chartConfig.series[0].name = "Total";
+			while(chartConfig.series[0].data.pop());
+			var won = 0, lost = 0;
+			candidates.forEach(function(candidate){
+				if(candidate.result == "Lost") lost = lost+1;
+				else won = won+1;
+			});
+			chartConfig.series[0].data.push({
+				name: "Won",
+				y: won
+			});
+			chartConfig.series[0].data.push({
+				name: "Lost",
+				y: lost
+			});
+		});
 
 		List.get("election", {}).then(function(elections){
 			$scope.filters.push({
@@ -198,7 +220,17 @@ function StateCntl($scope, $route, State, List, menuService, dataService){
 		});
 		dataService.updateState($scope.state.name);
 		dataService.updateGet(true);
-
+		dataService.updateChartFunction(function(chartConfig, candidates, data){
+			chartConfig.title.text = data.state + "<br> " + data.constituency + ", " + data.election;
+			chartConfig.series[0].name = "Votes";
+			while(chartConfig.series[0].data.pop());
+			candidates.forEach(function(candidate){
+				chartConfig.series[0].data.push({
+					name: String(candidate.person.name).substring(0, 20),
+					y: Number(candidate.votes)
+				});
+			});
+		});
 		List.get("election", {}).then(function(elections){
 			$scope.filters.push({
 				type: "election",
@@ -237,6 +269,17 @@ function ConstituencyCntl($scope, $route, Constituency, List, menuService, dataS
 		dataService.updateConstituency($scope.constituency.name);
 		dataService.updateState($scope.constituency.state);
 		dataService.updateGet(true);
+		dataService.updateChartFunction(function(chartConfig, candidates, data){
+			chartConfig.title.text = data.constituency + ", " + data.state + ", " + data.election;
+			chartConfig.series[0].name = "Votes";
+			while(chartConfig.series[0].data.pop());
+			candidates.forEach(function(candidate){
+				chartConfig.series[0].data.push({
+					name: String(candidate.person.name).substring(0, 20),
+					y: Number(candidate.votes)
+				});
+			});
+		});
 
 		List.get("election", {}).then(function(elections){
 			$scope.filters.push({
@@ -267,6 +310,24 @@ function PersonCntl($scope, $route, Person, List, menuService, dataService, Cand
 			name: $scope.person.name,
 			dob: $scope.person.dob
 
+		});
+		dataService.updateChartFunction(function(chartConfig, candidates, data){
+			chartConfig.title.text = data.person.name + "Win/Lose";
+			chartConfig.series[0].name = "Total";
+			while(chartConfig.series[0].data.pop());
+			var won = 0, lost = 0;
+			candidates.forEach(function(candidate){
+				if(candidate.result == "Lost") lost = lost+1;
+				else won = won+1;
+			});
+			chartConfig.series[0].data.push({
+				name: "Won",
+				y: won
+			});
+			chartConfig.series[0].data.push({
+				name: "Lost",
+				y: lost
+			});
 		});
 		dataService.updateGet(true);
 		$scope.data = dataService.getData();
@@ -305,6 +366,17 @@ function ElectionCntl($scope, $route, Election, List, menuService, dataService){
 		});
 		dataService.updateElection($scope.election.year);
 		dataService.updateGet(true);
+		dataService.updateChartFunction(function(chartConfig, candidates, data){
+			chartConfig.title.text = $scope.election.name + "th Loksabha <br>" + data.constituency + ", " + data.state;
+			chartConfig.series[0].name = "Votes";
+			while(chartConfig.series[0].data.pop());
+			candidates.forEach(function(candidate){
+				chartConfig.series[0].data.push({
+					name: String(candidate.person.name).substring(0, 20),
+					y: Number(candidate.votes)
+				});
+			});
+		});
 
 		List.get("state", {}).then(function(states){
 			$scope.filters.push({
@@ -346,9 +418,9 @@ function ElectionCntl($scope, $route, Election, List, menuService, dataService){
 	});
 }
 
-function StatsCntl($scope, menuService, List, Stats, $timeout){
+function StatsCntl($scope, menuService, List, Stats, $timeout, dataService){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
-	// dataService.reset();
+	dataService.reset();
 	menuService.update({
 		title: "Statistics",
 		link: "#/stats/"
