@@ -14,6 +14,12 @@ angular.module('esi.directives', [])
 						$(window).resize();
 					});
 				}
+				if(attrs.config){
+					$timeout(function() {
+						$(window).resize();
+					},1000);
+				}
+				
 			}
 		};
 	});

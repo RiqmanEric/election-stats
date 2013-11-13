@@ -28,7 +28,6 @@ angular.module('esi.filters', [])
 				var tuples=str[i].split(":");
 				if(typeof(tuples[1]) != "undefined"){
 					var tup="<b>"+tuples[0]+" : </b>"+tuples[1];
-					console.log(tup);
 					finalStr=finalStr+tup+"<br>";
 				}	
 			};

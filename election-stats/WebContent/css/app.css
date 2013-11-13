@@ -71,7 +71,6 @@ footer {
 }
 #name_list{
   position: absolute;
-  z-index: 100;
   background-color: #eee;
 }
 
