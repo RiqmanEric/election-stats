@@ -601,11 +601,15 @@ public class DataResource {
 		}
 
 		Collections.sort(discussionIds);
-
+		int prevId = -1;
 		for (int i = discussionIds.size() - 1; i > discussionIds.size()
 				- Integer.parseInt(index)
 				&& i >= 0; i--) {
 			int id = discussionIds.get(i);
+			if (id==prevId) {
+				continue;
+			}
+			prevId = id;
 			Discussion discussion = new Discussion(id, null, null);
 			query = "select * from discussion where id = " + id + ";";
 			rs = queryDB.executeQuery(query);
@@ -671,13 +675,13 @@ public class DataResource {
 			}
 			yearSet = yearSet.substring(0, yearSet.length() - 1) + ")";
 
-			query = "select sum(votes), statename, partyname, year from (select * from candidate where statename in "
+			query = "select sum(temp.votes), temp.statename, temp.partyname, temp.year from (select * from candidate where statename in "
 					+ stateSet
 					+ " and partyname in "
 					+ partySet
 					+ " and year in "
 					+ yearSet
-					+ ") group by statename, partyname, year";
+					+ ") AS temp group by statename, partyname, year";
 			rs = queryDB.executeQuery(query);
 
 			while (rs.next()) {
@@ -686,11 +690,21 @@ public class DataResource {
 			}
 
 			for (int i = 0; i < toReturn.size(); i++) {
-				query = "select sum(votes) from stats where statename = '"
+				query = "select sum(votescasted) from stats where statename = '"
 						+ toReturn.get(i).getState() + "' and electionYear = "
 						+ toReturn.get(i).getYear() + ";";
 				rs = queryDB.executeQuery(query);
-				toReturn.get(i).setPercentage(
+				System.out.println(query);
+				if (!rs.next()) {
+					System.out.println("This is a pain");
+					throw new WebApplicationException();
+				}
+				System.out.println(rs.getInt(1));
+				System.out.println(toReturn.get(i).getVotes());
+				double percent = (double)(toReturn.get(i).getVotes() * 100)
+						/ rs.getInt(1);
+				System.out.println(percent);
+				toReturn.get(i).setcount(
 						(double) (toReturn.get(i).getVotes() * 100)
 						/ rs.getInt(1));
 			}
