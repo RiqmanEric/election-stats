@@ -42,7 +42,7 @@ function DataCntl($scope, Candidates, Discussions, dataService, Login, menuServi
 		party: $scope.data.party,
 		personname: $scope.data.person.name,
 		persondob: $scope.data.person.dob,
-	}, 0).then(dataService.updateDiscussion);
+	}, 10).then(dataService.updateDiscussion);
 	$scope.filter = function(){
 		$scope.data.filters.forEach(function(filter){
 			if(filter.type == "election")
@@ -73,7 +73,7 @@ function DataCntl($scope, Candidates, Discussions, dataService, Login, menuServi
 			party: $scope.data.party,
 			personname: $scope.data.person.name,
 			persondob: $scope.data.person.dob,
-		},0).then(dataService.updateDiscussion);
+		},10).then(dataService.updateDiscussion);
 	}
 
 	$scope.chartConfig = dataService.getChartConfig();

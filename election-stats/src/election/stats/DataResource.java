@@ -589,6 +589,16 @@ public class DataResource {
 				discussionIds.add(rs.getInt(1));
 			}
 		}
+		
+		if(constituencyName.isEmpty() && stateName.isEmpty() 
+				&& electionYear.isEmpty() && personName.isEmpty() 
+				&& personDOB.isEmpty() && partyName.isEmpty()){
+			query = "select id from starter;";
+			rs = queryDB.executeQuery(query);
+			while (rs.next()) {
+				discussionIds.add(rs.getInt(1));
+			}
+		}
 
 		Collections.sort(discussionIds);
 
@@ -882,37 +892,34 @@ public class DataResource {
         if(keys.next()){
         	key = keys.getInt(1);
         }
-        
+        String topic = constituencyName + " " + stateName + " " + personName + " " + personDOB + " " + partyName + " "  + electionYear;       
+        query = "insert into starter values (" + key + ", '" + topic  + "');";
+		queryDB.executeUpdate(query);
         //add the discussion to the starter
         //Discussions about constituency
   		if(!constituencyName.isEmpty() && !stateName.isEmpty()){
-  			query = "insert into starter values (" + key + ", '" + constituencyName  + "');";
-  			queryDB.executeUpdate(query);	
-  			query = "insert into starter values (" + key + ", '" + stateName  + "');";
-  			queryDB.executeUpdate(query); 
   			query = "insert into constituencyStarter values (" + key + ", '" + constituencyName + "', '" + stateName  + "');";
   			queryDB.executeUpdate(query); 
   		}
       		
       	//Discussion about election
   		if(!electionYear.isEmpty()){
-  			query = "insert into starter values (" + key + ", " + electionYear  + ");";
-  			queryDB.executeUpdate(query);
   			query = "insert into electionStarter values (" + key + ", '" + electionYear + "');";
   			queryDB.executeUpdate(query);
   		}
       		
       	//Discussion about party
   		if(!partyName.isEmpty()){
-  			query = "insert into starter values (" + key + ", " + partyName  + ");";
+  			query = "insert into partystarter values (" + key + ", '" + partyName  + "');";
   			queryDB.executeUpdate(query);
   		}
       		
   		//Discussion about person
   		if(!personName.isEmpty() && !personDOB.isEmpty()){
-  			query = "insert into starter values (" + key + ", " + personName  + ");";
+  			query = "insert into personstarter values (" + key + ", '" + personName + "', '" + personDOB + "');";
   			queryDB.executeUpdate(query);
-  		} 		
+  		}
+  		 		
   		Discussion toReturn = new Discussion(key, content, "");
         query = "select * from users where emailid = '" + emailid + "';";
 		ResultSet rs = queryDB.executeQuery(query);
