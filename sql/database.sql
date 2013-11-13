@@ -147,7 +147,7 @@ Create Table Candidate(
 );
 
 Create Table Discussion(
-	ID			BIGINT,
+	ID			SERIAL,
 	Content		TEXT,
 	EmailId		VARCHAR(200),
 

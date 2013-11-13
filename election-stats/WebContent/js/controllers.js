@@ -9,22 +9,18 @@ function MenuCntl($scope, menuService, Login) {
 	$scope.login = function(){
 		Login.login().then(function(data){
 			menuService.setUser(data);
-			console.log(data);
 		},function(data){
 			menuService.unSetUser();
-			console.log(data);
 		});
 	}
 	Login.checkAuth().then(function(data){
 		menuService.setUser(data);
-		console.log(data);
 	},function(data){
 		menuService.unSetUser();
-		console.log(data);
 	});
 }
 
-function DataCntl($scope, Candidates, Discussions, dataService){
+function DataCntl($scope, Candidates, Discussions, dataService, Login, menuService){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	$scope.data = dataService.getData();
 	$scope.candidates = dataService.getCandidates();
@@ -81,6 +77,70 @@ function DataCntl($scope, Candidates, Discussions, dataService){
 	}
 
 	$scope.chartConfig = dataService.getChartConfig();
+	$scope.id = 0;
+	$scope.emailid;
+	$scope.addDiscussion = function(id){
+		$scope.id = id;
+		Login.login().then(function(data){
+			menuService.setUser(data);
+			$scope.emailid = data.email;
+		},function(data){
+			menuService.unSetUser();
+			$scope.emailid = "";
+		});
+	}
+	$scope.submitDiscussion = function(){
+		if($scope.emailid==""){
+			return;
+		}
+		if (typeof($scope.id) == "undefined"){
+			Discussions.add({
+				election: $scope.data.election,
+				state: $scope.data.state,
+				constituency: $scope.data.constituency,
+				party: $scope.data.party,
+				personname: $scope.data.person.name,
+				persondob: $scope.data.person.dob,
+				content: $scope.content,
+				emailid: $scope.emailid
+			}).then(function(discussion){
+				discussion.comments = [];
+				$scope.discussions.push(discussion);
+			}, function(error){
+				menuService.error("could not add your discussion.");
+			});
+		}else{
+			Discussions.postComment($scope.id, {
+				content: $scope.content,
+				emailid: $scope.emailid
+			}).then(function(comment){
+				pushComments([comment], $scope.id, $scope.discussions);
+			}, function(error){
+				menuService.error("Could not add your comment.");
+			});
+		}
+	}
+	$scope.getComments = function(id){
+		Discussions.getComments(id).then(function(comments){
+			pushComments(comments.comments, id, $scope.discussions);
+		}, function(error){
+			menuService.error("Could not load your comments.");
+		});
+	}
+	var pushComments = function(comments, id, discussions){
+		discussions.forEach(function(discussion){
+			if(discussion.id == id){
+				comments.forEach(function(comment){
+					comment.comments = [];
+					discussion.comments.push(comment);
+				});
+				return;
+			}
+			if(discussion.comments.length!=0){
+				pushComments(comments, id, discussion.comments)
+			}
+		});
+	}
 
 }
 
@@ -156,14 +216,12 @@ function HomeCntl($scope, menuService, dataService, List, $timeout){
 			if($scope.search_string=="") return;
 			List.search($scope.search_string, currentKey).then(function(data){
 				if(data.key==currentKey){
-					console.log(data.list);
 					while($scope.persons.pop());
 					data.list.forEach(function(e){
 						$scope.persons.push(e);
 					});
 				}
 			}, function(data){
-				console.log(data.config.key);
 			});
 		}, 500);
 	});

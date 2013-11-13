@@ -138,6 +138,7 @@ angular.module('esi.services', ['ngCookies']).service('menuService', function() 
 		updateDiscussions: function(disc) {
 			while (discussions.pop());
 			disc.discussions.forEach(function(d) {
+				if(!d.comments) d.comments = [];
 				discussions.push(d);
 			});
 		},
@@ -237,6 +238,22 @@ angular.module('esi.services', ['ngCookies']).service('menuService', function() 
 			return new Discussions({discussions: response.data});
 		});
 	};
+	Discussions.add = function(content) {
+		return $http.post('/election-stats/api/discussion', $.param(content)).then(function(response) {
+			return new Discussions(response.data);
+		});
+	}
+	Discussions.getComments = function(id) {
+		return $http.get('/election-stats/api/comment/' + id).then(function(response) {
+			return new Discussions({comments: response.data});
+		});
+	}
+	Discussions.postComment = function(id, content) {
+		return $http.post('/election-stats/api/comment/' + id, $.param(content)).then(function(response) {
+			return new Discussions(response.data);
+		});
+	}
+
 	return Discussions;
 }).factory('List', function($http, $cacheFactory, $q) {
 	var List = function(data) {
@@ -287,6 +304,7 @@ angular.module('esi.services', ['ngCookies']).service('menuService', function() 
 				email: $cookieStore.get("email"),
 				username: $cookieStore.get("username")
 			});
+			$http.post('/election-stats/api/user', $.param({username: $cookieStore.get("username"), emailid: $cookieStore.get("email")}), {'Content-Type': 'application/x-www-form-urlencoded'});
 			return deferred1.promise;
 		}
 		gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, this.handleAuthResult);
@@ -300,6 +318,7 @@ angular.module('esi.services', ['ngCookies']).service('menuService', function() 
 				email: $cookieStore.get("email"),
 				username: $cookieStore.get("username")
 			});
+			$http.post('/election-stats/api/user', $.param({username: $cookieStore.get("username"), emailid: $cookieStore.get("email")}), {'Content-Type': 'application/x-www-form-urlencoded'});
 			return deferred1.promise;
 		}else{
 			deferred1.reject('error');
@@ -319,7 +338,7 @@ angular.module('esi.services', ['ngCookies']).service('menuService', function() 
 					});
 					$cookieStore.put("email", resp.email);
 					$cookieStore.put("username", resp.name);
-					console.log(data);
+					$http.post('/election-stats/api/user', $.param({username: $cookieStore.get("username"), emailid: $cookieStore.get("email")}), {'Content-Type': 'application/x-www-form-urlencoded'});
 				});
 			});
 			deferred.resolve(data);

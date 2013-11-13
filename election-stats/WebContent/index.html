@@ -108,14 +108,29 @@
 		</div>
 
 		<div class="row">
-				<div class="titleBar panel small-12 large-12 columns callout">
-					<div class="large-2 small-2 columns"><h6>Discussion</h6></div>
-					<div class="large-2 small-2 columns" >
-				  <a class="button small">Add Discussion</a>
-				</div>
-				</div>
-				<div class="small-12 large-12 columns" ng-repeat="discussion in discussions" ng-include="'partials/discussion.html'">
-				</div>
+			<div class="titleBar panel small-12 large-12 columns callout">
+				<div class="large-2 small-2 columns"><h6>Discussion</h6></div>
+				<div class="large-2 small-2 columns" >
+			  <a class="button small" data-dropdown="StartDisc" ng-click="addDiscussion()">Add Discussion</a>
+			</div>
+			</div>
+			<div id="Discussion" class="small-12 large-12 columns" ng-repeat="discussion in discussions" ng-include="'partials/discussion.html'">
+			</div>
+			<div id="StartDisc" class="f-dropdown large content"  data-dropdown-content class="row" ng-show="submitShow">
+            <div class="large-12 columns">
+                <form  class="custom"  >
+                    <div class="row">
+                        <div class="large-12 columns">
+                            <textarea type="text" ng-model="content" placeholder="Add Discussion"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="large-1 large-centered columns">
+                            <a class="small button close-reveal-modal submit" data-dropdown="StartDisc" ng-click="submitDiscussion()">Submit</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
 		</div>
 	</div>
 
@@ -150,6 +165,7 @@
 	<script src="lib/Chart/highcharts.js"></script>
 	<script src="lib/Chart/highcharts-more.js"></script>
 	<script src="lib/Chart/highcharts-ng.js"></script>
+	<!-- google login api -->
 	<script src="https://apis.google.com/js/client.js"></script>
 	<!-- AngularJS app files -->
 	<script src="js/app.js"></script>
