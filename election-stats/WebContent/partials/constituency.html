@@ -11,6 +11,14 @@
 						<td class="small-4 large-4"><h6 class="fn" >State Name </h6></td>
 						<td class="small-8 large-8"> <a href="#/state/{{constituency.state}}">{{constituency.state}}</a></td>
 					</tr>
+					<tr>
+						<td class="small-4 large-4"><h6 class="fn" >Foundation Year </h6></td>
+						<td class="small-8 large-8">{{constituency.foundationYear}}</td>
+					</tr>
+					<tr>
+						<td class="small-4 large-4"><h6 class="fn" >Major Party </h6></td>
+						<td class="small-8 large-8"> <a href="#/party/{{constituency.majorParty}}">{{constituency.majorParty}}</a></td>
+					</tr>
 
 					<tr>
 						<td class="small-4 large-4"><h6 class="fn">Notable Persons </h6></td>
@@ -22,7 +30,7 @@
 			</div>
 	</div>
 		<div class="row">
-			<div class="small-12 large-12 columns History">
+			<div class="small-12 large-12 columns History smallCaps">
 				<h5 class="fn">Facts</h5>
 				<p>
 				{{constituency.fact}}

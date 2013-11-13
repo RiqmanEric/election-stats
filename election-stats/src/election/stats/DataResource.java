@@ -1018,7 +1018,7 @@ public class DataResource {
 		if(count == 0){
 			query = "Insert into Follows Values('" + emailid + "','"+ partyname + "');";
 			queryDB.executeUpdate(query);
-			query = "select count(*) from Follows where emailid = '" + emailid + "' and partyname = '" + partyname +"';";
+			query = "select count(*) from Follows where partyname = '" + partyname +"';";
 			rs = queryDB.executeQuery(query);
 			if (!rs.next()) {
 				count = 0;
@@ -1026,9 +1026,10 @@ public class DataResource {
 			else{
 				count = rs.getInt(1);						
 			}
-			query = "update party set numberoffollowers="+ count +"where party='"+partyname+";";
+			query = "update party set numberoffollowers= "+ count +" where name='"+partyname+"';";
 			queryDB.executeUpdate(query);
 		}
+		
 		return count;
 	}
 }

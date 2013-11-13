@@ -108,13 +108,13 @@
 		</div>
 
 		<div class="row">
-			<div class="titleBar panel small-12 large-12 columns callout">
+			<div class="titleBar panel small-12 large-12 columns callout smallCaps">
 				<div class="large-2 small-2 columns"><h6>Discussion</h6></div>
 				<div class="large-2 small-2 columns" >
 			  <a class="button small" data-dropdown="StartDisc" ng-click="addDiscussion()">Add Discussion</a>
 			</div>
 			</div>
-			<div id="Discussion" class="small-12 large-12 columns" ng-repeat="discussion in discussions" ng-include="'partials/discussion.html'">
+			<div id="Discussion" class="small-12 large-12 columns discussionPart" ng-repeat="discussion in discussions" ng-include="'partials/discussion.html'" callfoundation>
 			</div>
 			<div id="StartDisc" class="f-dropdown large content"  data-dropdown-content class="row" ng-show="submitShow">
             <div class="large-12 columns">

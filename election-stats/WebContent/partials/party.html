@@ -37,7 +37,7 @@
 							{{party.followers}}
 						</td>
 						<td>
-						<a class="small button">Follow </a>
+						<a class="small button" ng-click="followParty()">Follow </a>
 						</td>
 					</tr>
 				</table>
@@ -45,7 +45,7 @@
 		</div>
 
 		<div class="row">
-			<div class="small-12 large-12 columns History">
+			<div class="small-12 large-12 columns History smallCaps">
 				<h5 class="fn">History</h5>
 				<p>
 					{{party.history}}

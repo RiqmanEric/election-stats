@@ -35,14 +35,6 @@ function DataCntl($scope, Candidates, Discussions, dataService, Login, menuServi
 			persondob: $scope.data.person.dob,
 		}).then(dataService.updateCandidates);
 	}
-	Discussions.get({
-		election: $scope.data.election,
-		state: $scope.data.state,
-		constituency: $scope.data.constituency,
-		party: $scope.data.party,
-		personname: $scope.data.person.name,
-		persondob: $scope.data.person.dob,
-	}, 10).then(dataService.updateDiscussion);
 	$scope.filter = function(){
 		$scope.data.filters.forEach(function(filter){
 			if(filter.type == "election")
@@ -73,7 +65,7 @@ function DataCntl($scope, Candidates, Discussions, dataService, Login, menuServi
 			party: $scope.data.party,
 			personname: $scope.data.person.name,
 			persondob: $scope.data.person.dob,
-		},10).then(dataService.updateDiscussion);
+		},10).then(dataService.updateDiscussions);
 	}
 
 	$scope.chartConfig = dataService.getChartConfig();
@@ -106,6 +98,7 @@ function DataCntl($scope, Candidates, Discussions, dataService, Login, menuServi
 			}).then(function(discussion){
 				discussion.comments = [];
 				$scope.discussions.push(discussion);
+				$scope.content="";
 			}, function(error){
 				menuService.error("could not add your discussion.");
 			});
@@ -114,22 +107,27 @@ function DataCntl($scope, Candidates, Discussions, dataService, Login, menuServi
 				content: $scope.content,
 				emailid: $scope.emailid
 			}).then(function(comment){
-				pushComments([comment], $scope.id, $scope.discussions);
+				pushComments([comment], $scope.id, $scope.discussions,false);
+				$scope.content="";
 			}, function(error){
 				menuService.error("Could not add your comment.");
 			});
 		}
+
 	}
 	$scope.getComments = function(id){
 		Discussions.getComments(id).then(function(comments){
-			pushComments(comments.comments, id, $scope.discussions);
+			pushComments(comments.comments, id, $scope.discussions,true);
 		}, function(error){
 			menuService.error("Could not load your comments.");
 		});
 	}
-	var pushComments = function(comments, id, discussions){
+	var pushComments = function(comments, id, discussions,empty){
 		discussions.forEach(function(discussion){
 			if(discussion.id == id){
+				if(empty){
+					while(discussion.comments.pop());
+				}
 				comments.forEach(function(comment){
 					comment.comments = [];
 					discussion.comments.push(comment);
@@ -144,7 +142,7 @@ function DataCntl($scope, Candidates, Discussions, dataService, Login, menuServi
 
 }
 
-function HomeCntl($scope, menuService, dataService, List, $timeout){
+function HomeCntl($scope, menuService, dataService, List, $timeout,Discussions,Candidates){
 	menuService.update({
 		title: "Home",
 		link: "#"
@@ -203,6 +201,40 @@ function HomeCntl($scope, menuService, dataService, List, $timeout){
 			});
 		}
 	});
+	$scope.data = dataService.getData();
+	$scope.data.filters.forEach(function(filter){
+		if(filter.type == "election")
+			$scope.data.election = filter.value;
+		if(filter.type == "state")
+			$scope.data.state = filter.value;
+		if(filter.type == "party")
+			$scope.data.party = filter.value;
+		if(filter.type == "constituency")
+			$scope.data.constituency = filter.value;
+		if(filter.type == "person")
+			$scope.data.person = filter.value;
+	});
+	if($scope.data.get){
+		Candidates.get({
+			election: $scope.data.election,
+			state: $scope.data.state,
+			constituency: $scope.data.constituency,
+			party: $scope.data.party,
+			personname: $scope.data.person.name,
+			persondob: $scope.data.person.dob,
+		}).then(dataService.updateCandidates);
+	}
+	Discussions.get({
+		election: $scope.data.election,
+		state: $scope.data.state,
+		constituency: $scope.data.constituency,
+		party: $scope.data.party,
+		personname: $scope.data.person.name,
+		persondob: $scope.data.person.dob,
+	}, 10).then(dataService.updateDiscussions);
+
+
+
 	$scope.search_string = "";
 
 	var tempText = '', filterTextTimeout;
@@ -227,7 +259,7 @@ function HomeCntl($scope, menuService, dataService, List, $timeout){
 	});
 }
 
-function PartyCntl($scope, $route, Party, List, menuService, dataService){
+function PartyCntl($scope, $route, Party, List, menuService, dataService,Login,Discussions,Candidates){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	dataService.reset();
 	Party.get($route.current.params.partyname).then(function(p){
@@ -272,6 +304,37 @@ function PartyCntl($scope, $route, Party, List, menuService, dataService){
 					value: states.list[0]
 				});
 				dataService.updateFilters($scope.filters);
+				$scope.data = dataService.getData();
+				$scope.data.filters.forEach(function(filter){
+					if(filter.type == "election")
+						$scope.data.election = filter.value;
+					if(filter.type == "state")
+						$scope.data.state = filter.value;
+					if(filter.type == "party")
+						$scope.data.party = filter.value;
+					if(filter.type == "constituency")
+						$scope.data.constituency = filter.value;
+					if(filter.type == "person")
+						$scope.data.person = filter.value;
+				});
+				if($scope.data.get){
+					Candidates.get({
+						election: $scope.data.election,
+						state: $scope.data.state,
+						constituency: $scope.data.constituency,
+						party: $scope.data.party,
+						personname: $scope.data.person.name,
+						persondob: $scope.data.person.dob,
+					}).then(dataService.updateCandidates);
+				}
+				Discussions.get({
+					election: $scope.data.election,
+					state: $scope.data.state,
+					constituency: $scope.data.constituency,
+					party: $scope.data.party,
+					personname: $scope.data.person.name,
+					persondob: $scope.data.person.dob,
+				}, 10).then(dataService.updateDiscussions);
 			}, function(err){
 				menuService.error("State list not available.");
 			});
@@ -281,9 +344,31 @@ function PartyCntl($scope, $route, Party, List, menuService, dataService){
 	}, function(err){
 		menuService.error($route.current.params.partyname + " is not a valid party.");
 	});
+	$scope.emailid="";
+	$scope.followParty=function(){
+		console.log($scope.emailid +" emailid here");
+		Login.login().then(function(data){
+			menuService.setUser(data);
+			$scope.emailid = data.email;
+			console.log($scope.emailid +" emailid");
+			Party.follow({
+				partyname:$scope.party.name,
+				emailid: $scope.emailid
+
+			}).then(function(c){
+				$scope.party.followers=c.count;
+				console.log(c.count);
+			})		
+		},function(data){
+			menuService.unSetUser();
+			$scope.emailid = "";
+		});
+
+		
+	}
 }
 
-function StateCntl($scope, $route, State, List, menuService, dataService){
+function StateCntl($scope, $route, State, List, menuService, dataService,Discussions,Candidates){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	dataService.reset();
 	State.get($route.current.params.statename).then(function(s){
@@ -320,6 +405,37 @@ function StateCntl($scope, $route, State, List, menuService, dataService){
 					value: constituency.list[0]
 				});
 				dataService.updateFilters($scope.filters);
+				$scope.data = dataService.getData();
+				$scope.data.filters.forEach(function(filter){
+					if(filter.type == "election")
+						$scope.data.election = filter.value;
+					if(filter.type == "state")
+						$scope.data.state = filter.value;
+					if(filter.type == "party")
+						$scope.data.party = filter.value;
+					if(filter.type == "constituency")
+						$scope.data.constituency = filter.value;
+					if(filter.type == "person")
+						$scope.data.person = filter.value;
+				});
+				if($scope.data.get){
+					Candidates.get({
+						election: $scope.data.election,
+						state: $scope.data.state,
+						constituency: $scope.data.constituency,
+						party: $scope.data.party,
+						personname: $scope.data.person.name,
+						persondob: $scope.data.person.dob,
+					}).then(dataService.updateCandidates);
+				}
+				Discussions.get({
+					election: $scope.data.election,
+					state: $scope.data.state,
+					constituency: $scope.data.constituency,
+					party: $scope.data.party,
+					personname: $scope.data.person.name,
+					persondob: $scope.data.person.dob,
+				}, 10).then(dataService.updateDiscussions);
 			}, function(err){
 				menuService.error("Constituency list not available.");
 			});
@@ -331,7 +447,7 @@ function StateCntl($scope, $route, State, List, menuService, dataService){
 	});
 }
 
-function ConstituencyCntl($scope, $route, Constituency, List, menuService, dataService){
+function ConstituencyCntl($scope, $route, Constituency, List, menuService, dataService,Discussions,Candidates){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	dataService.reset();
 	Constituency.get($route.current.params.statename,$route.current.params.constituencyname).then(function(c){
@@ -363,6 +479,37 @@ function ConstituencyCntl($scope, $route, Constituency, List, menuService, dataS
 				value: elections.list[0]
 			});
 			dataService.updateFilters($scope.filters);
+			$scope.data = dataService.getData();
+			$scope.data.filters.forEach(function(filter){
+				if(filter.type == "election")
+					$scope.data.election = filter.value;
+				if(filter.type == "state")
+					$scope.data.state = filter.value;
+				if(filter.type == "party")
+					$scope.data.party = filter.value;
+				if(filter.type == "constituency")
+					$scope.data.constituency = filter.value;
+				if(filter.type == "person")
+					$scope.data.person = filter.value;
+			});
+			if($scope.data.get){
+				Candidates.get({
+					election: $scope.data.election,
+					state: $scope.data.state,
+					constituency: $scope.data.constituency,
+					party: $scope.data.party,
+					personname: $scope.data.person.name,
+					persondob: $scope.data.person.dob,
+				}).then(dataService.updateCandidates);
+			}
+			Discussions.get({
+				election: $scope.data.election,
+				state: $scope.data.state,
+				constituency: $scope.data.constituency,
+				party: $scope.data.party,
+				personname: $scope.data.person.name,
+				persondob: $scope.data.person.dob,
+			}, 10).then(dataService.updateDiscussions);
 		}, function(err){
 			menuService.error("Elections list not available.");
 		});
@@ -423,13 +570,13 @@ function PersonCntl($scope, $route, Person, List, menuService, dataService, Cand
 			party: $scope.data.party,
 			personname: $scope.data.person.name,
 			persondob: $scope.data.person.dob,
-		}, 0).then(dataService.updateDiscussion);
+		}, 10).then(dataService.updateDiscussions);
 	}, function(err){
 		menuService.error($route.current.params.personname + " - " + $route.current.params.dob + " is not a valid person.");
 	});
 }
 
-function ElectionCntl($scope, $route, Election, List, menuService, dataService){
+function ElectionCntl($scope, $route, Election, List, menuService, dataService,Candidates,Discussions){
 	$scope.imagesrc = "http://www.cse.iitb.ac.in/~manku/database";
 	dataService.reset();
 	Election.get($route.current.params.electionyear).then(function(e){
@@ -476,6 +623,37 @@ function ElectionCntl($scope, $route, Election, List, menuService, dataService){
 							value: constituencies.list[0]
 						});
 						dataService.updateFilters($scope.filters);
+						$scope.data = dataService.getData();
+						$scope.data.filters.forEach(function(filter){
+							if(filter.type == "election")
+								$scope.data.election = filter.value;
+							if(filter.type == "state")
+								$scope.data.state = filter.value;
+							if(filter.type == "party")
+								$scope.data.party = filter.value;
+							if(filter.type == "constituency")
+								$scope.data.constituency = filter.value;
+							if(filter.type == "person")
+								$scope.data.person = filter.value;
+						});
+						if($scope.data.get){
+							Candidates.get({
+								election: $scope.data.election,
+								state: $scope.data.state,
+								constituency: $scope.data.constituency,
+								party: $scope.data.party,
+								personname: $scope.data.person.name,
+								persondob: $scope.data.person.dob,
+							}).then(dataService.updateCandidates);
+						}
+						Discussions.get({
+							election: $scope.data.election,
+							state: $scope.data.state,
+							constituency: $scope.data.constituency,
+							party: $scope.data.party,
+							personname: $scope.data.person.name,
+							persondob: $scope.data.person.dob,
+						}, 10).then(dataService.updateDiscussions);
 					}, function(err){
 						menuService.error("Constituency list not available.");
 					});

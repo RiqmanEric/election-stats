@@ -31,10 +31,10 @@
 			</div>
 
 			<div class="row">
-				<div class="small-12 large-12 columns History">
+				<div class="small-12 large-12 columns History smallCaps">
 					<h5 class="fn">History</h5>
 					<p>
-						{{person.history}}
+					<span ng-bind-html-unsafe="person.history | removeJunk"></span>
 					</p>
 				</div>
 

@@ -136,6 +136,7 @@ angular.module('esi.services', ['ngCookies']).service('menuService', function() 
 			chartFunc(chartConfig,cand.candidates, data);
 		},
 		updateDiscussions: function(disc) {
+			console.log(disc);
 			while (discussions.pop());
 			disc.discussions.forEach(function(d) {
 				if(!d.comments) d.comments = [];
@@ -168,7 +169,13 @@ angular.module('esi.services', ['ngCookies']).service('menuService', function() 
 		return $http.get('/election-stats/api/party/' + name).then(function(response) {
 			return new Party(response.data);
 		});
+
 	};
+	Party.follow=function(content){
+		return $http.post('/election-stats/api/follow/', $.param(content)).then(function(response) {
+			return new Party({count: response.data});
+		});
+	}
 	return Party;
 }).factory('State', function($http) {
 	var State = function(data) {
