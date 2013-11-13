@@ -5,16 +5,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class VotePercentage {
 	int votes;
-	double percentage;
+	double count;
 	String state;
 	String party;
 	String year;
 	
-	public VotePercentage(int votes, double percentage, String state,
+	public VotePercentage (int votes, double count, String state,
 			String party, String year) {
 		super();
 		this.votes = votes;
-		this.percentage = percentage;
+		this.count = count;
 		this.state = state;
 		this.party = party;
 		this.year = year;
@@ -28,12 +28,12 @@ public class VotePercentage {
 		this.votes = votes;
 	}
 
-	public double getPercentage() {
-		return percentage;
+	public double getcount() {
+		return count;
 	}
 
-	public void setPercentage(double percentage) {
-		this.percentage = percentage;
+	public void setcount(double count) {
+		this.count = count;
 	}
 
 	public String getState() {
