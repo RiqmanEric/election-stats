@@ -1,7 +1,0 @@
-<a href="#">{{discussion.name}}: </a>
-<br> <span class="smallCaps">{{discussion.content}}</span>
-<ul class="inline-list " style="font-size:12px">
-	<li><a href="" ng-click="getComments(discussion.id)">See Comments</a></li>
-	<li><a href="" data-dropdown="StartDisc" ng-click="addDiscussion(discussion.id)">Add Comments</a></li>
-</ul>
-<div class="small-11 large-11 large-offset-1 small-offset-1 columns discussionPart" ng-repeat="discussion in discussion.comments" ng-include="'partials/discussion.html'" callfoundation></div>

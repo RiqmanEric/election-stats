@@ -1,0 +1,112 @@
+<div class="row" id="Candidates">
+	<div class="row" >
+		<div class="large-12 columns">
+			<div class="large-4 push-1 columns field_selector panel callout ">
+				<div class="large-12 columns large-centered	field_name"><h4>Select Election</h4>
+				</div>
+				<hr/>
+				<form class="custom">
+					<div class="row">
+					<div class="large-8 columns">
+						<select ng-model="election">
+							<option>Election</option>
+							<option ng-repeat="e in elections" callfoundation>{{e}}</option>
+						</select>
+					 </div>
+						<div class="large-4 pull-1 small-4 columns" id="Filter_Submit">
+							<a href="#/election/{{election}}" class="button postfix submit">GO</a>
+						</div>
+				 </div>
+				</form>
+			</div>
+			<div class="large-4 pull-1 columns panel callout field_selector">
+			<div class="large-12 columns large-centered callout field_name"><h4>Select Party </h4></div>
+			<hr/>
+				<form class="custom">
+					<div class="row">
+					<div class="large-8 columns">
+						<select ng-model="party">
+							<option>Party</option>
+							<option ng-repeat="p in parties" callfoundation>{{p}}</option>
+						</select>
+					 </div>
+						<div class="large-4 pull-1 small-4 columns" id="Filter_Submit">
+							<a href="#/party/{{party}}" class="button postfix submit">GO</a>
+						</div>
+				 	</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row" >
+		<div class="large-12 columns">
+			<div class="large-4 push-1 columns field_selector panel callout ">
+				<div class="large-12 columns large-centered	field_name"><h4>Select State </h4></div>
+				<hr/>
+				<form class="custom">
+					<div class="row">
+					<div class="large-8 columns">
+						<select ng-model="state">
+							<option>State</option>
+							<option ng-repeat="s in states" callfoundation>{{s}}</option>
+						</select>
+					 </div>
+						<div class="large-4 pull-1 small-4 columns" id="Filter_Submit">
+							<a href="#/state/{{state}}" class="button postfix submit">GO</a>
+						</div>
+				 </div>
+				</form>
+			</div>
+				<div class="large-4 pull-1 columns field_selector panel callout ">
+				<div class="large-12 columns large-centered	field_name"><h4>Select Person</h4></div>
+				<hr/>
+				<form class="custom">
+					<div class="row">
+						<div class="large-8 columns">
+							<input type="text" placeholder="Select Person" ng-model="person.name" data-dropdown="drop1">
+							<ul id="drop1" class="f-dropdown small" data-dropdown-content>
+								<li ng-repeat="p in persons" callfoundation>
+							  		<a href="#/person/{{p.name}}/{{p.dob}}">{{p.name}}</a>
+								</li>
+							</ul>
+						</div>
+						<div class="large-4 pull-1 small-4 columns" id="Filter_Submit">
+							<a href="#" class="button postfix submit">GO</a>
+						</div>
+				 </div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row" >
+		<div class="large-12 columns">
+		<div class="large-10 columns panel large-centered callout field_selector">
+				<div class="large-10 columns large-centered callout field_name"><h4>Select Constituency </h4></div>
+				<hr/>
+			<form class="custom">
+				<div class="row">
+					<div class="large-4 columns">
+
+						<select ng-model="constituency.state">
+							<option>State</option>
+							<option ng-repeat="state in states" callfoundation>{{state}}</option>
+						</select>
+
+					 </div>
+					 <div class="large-4 columns">
+
+						<select ng-model="constituency.name">
+							<option>Constituency</option>
+							<option ng-repeat="c in constituencies" callfoundation>{{c}}</option>
+						</select>
+
+					 </div>
+						<div class="large-4	small-5	columns" id="Filter_Submit">
+							<a href="#/constituency/{{constituency.state}}/{{constituency.name}}" class="button postfix submit">GO</a>
+						</div>
+				 </div>
+				</form>
+			</div>
+			</div>
+	</div>
+</div>
